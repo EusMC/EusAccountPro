@@ -1,0 +1,29 @@
+name: EusAccountPro
+version: ${project.version}
+main: cn.elabosak.eusaccountpro.EusAccountPro
+api-version: 1.13
+authors: [ElaBosak233]
+description: Use 2-step verification to protect your account on the Bukkit/Spigot server
+website: https://github.com/ElaBosak233/EusAccountPro
+
+commands:
+  eap:
+    description: EusAccountPro的主命令
+    usage: /eap
+    permission: EusAccountPro.common
+  2fa:
+    description: 验证2fa
+    usage: /2fa <code>
+    permission: EusAccountPro.common
+  eapre:
+    description: 删除其他玩家的2fa
+    usage: /eapre <玩家名>
+    permission: EusAccountPro.admin
+
+permissions:
+  EusAccountPro.admin:
+    description: 可以控制其他玩家的2fa激活情况
+    default: op
+  EusAccountPro.common:
+    description: EusAccountPro的普通权限
+    default: true

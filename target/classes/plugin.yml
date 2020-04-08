@@ -1,0 +1,7 @@
+name: EusAccountPro
+version: 20w15a
+main: cn.elabosak.eusaccountpro.EusAccountPro
+api-version: 1.13
+authors: [ElaBosak233]
+description: Use 2-step verification to protect your account on the Bukkit/Spigot server
+website: https://github.com/ElaBosak233/EusAccountPro
