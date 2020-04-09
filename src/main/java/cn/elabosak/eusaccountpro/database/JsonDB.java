@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 public class JsonDB extends Database {
     Gson gson = new Gson();
     @Override
-    String getSecretKey(UUID uuid) {
+    public String getSecretKey(UUID uuid) {
         return null;
     }
 
     @Override
-    boolean updatePlayer(UUID uuid, String secretKey) {
+    public boolean updatePlayer(UUID uuid, String secretKey) {
         String jsonObject = gson.toJson(uuid,secretKey);
         return false;
     }
