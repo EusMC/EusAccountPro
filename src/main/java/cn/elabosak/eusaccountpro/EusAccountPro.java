@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 public final class EusAccountPro extends JavaPlugin {
@@ -74,7 +75,6 @@ public final class EusAccountPro extends JavaPlugin {
                     p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
                     p.getInventory().clear();
                     uuid = p.getUniqueId().toString();
-
                     // TODO Generate & display QRCode
                     //Authenticator.generateSecretKey();
                     return true;
