@@ -1,6 +1,9 @@
 package cn.elabosak.eusaccountpro;
 
 import cn.elabosak.eusaccountpro.controller.AuthController;
+import cn.elabosak.eusaccountpro.database.Database;
+import cn.elabosak.eusaccountpro.database.JsonDB;
+import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import com.google.gson.Gson;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -21,8 +24,10 @@ public final class EusAccountPro extends JavaPlugin {
     public static Map<Player, String> tempCode = new HashMap<Player, String>();
     public static String uuid;
     public HashMap<Player, Inventory> oldInvs = new HashMap<Player, Inventory>();
+    public HashMap<Player, Boolean> loggedIn = new HashMap<>();
 
     AuthController authController;
+    Database database;
 
     //这里要写一个监听器，监听玩家在线、离线
 
@@ -36,6 +41,19 @@ public final class EusAccountPro extends JavaPlugin {
         }
         reloadConfig();
 
+        new EAPConfig(this);
+
+        switch (EAPConfig.dbType) {
+            case SQLite:
+                // TODO SQLite support
+                break;
+            case MySQL:
+                // TODO MySQL support
+                break;
+            case JSON:
+            default:
+                database = new JsonDB();
+        }
         authController = new AuthController(this);
     }
 
@@ -92,9 +110,23 @@ public final class EusAccountPro extends JavaPlugin {
                     return true;
                 } else {
                     //待加入：先行判断，1.该玩家是否已激活2fa 2.该玩家是否已经验证过2fa
+                    if (loggedIn.getOrDefault(p, false)) {
+                        p.sendMessage(ChatColor.AQUA + "您已认证");
+                        return true;
+                    }
                     String code = args[0];
-
-
+                    try {
+                        if (authController.verify(p, code)) {
+                            // Success
+                            loggedIn.put(p, true);
+                            p.sendMessage(ChatColor.GREEN + "认证成功");
+                        } else {
+                            // Invalid code
+                            p.sendMessage(ChatColor.YELLOW + "认证失败");
+                        }
+                    } catch (NotRegistered e) {
+                        p.sendMessage(ChatColor.RED + "尚未注册");
+                    }
                 }
             } else {
                 sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
@@ -115,5 +147,9 @@ public final class EusAccountPro extends JavaPlugin {
             }
         }
         return false;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 }

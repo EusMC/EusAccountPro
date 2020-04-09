@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public abstract class Database {
 
-    abstract String getSecretKey(UUID uuid);
+    public abstract String getSecretKey(UUID uuid);
 
-    abstract boolean updatePlayer(UUID uuid, String secretKey);
+    public abstract boolean updatePlayer(UUID uuid, String secretKey);
 
 }
