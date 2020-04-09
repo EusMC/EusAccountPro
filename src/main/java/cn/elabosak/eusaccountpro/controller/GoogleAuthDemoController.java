@@ -26,7 +26,7 @@ public class GoogleAuthDemoController {
     @RequestMapping("/googleAuthQrCode")
     public void googleAuthQrCode(HttpServletResponse response) {
         //服务名称(一般定义为常量) 如 Google Github 印象笔记 等(不参与运算,只是为了与其他服务作区分)
-        String issuer = "EusMC二步验证";
+        String issuer = "EusMC";
         //获取用户名称(从数据库或者缓存),可以是登录名,邮箱,手机(不参与运算,只是为了与其他服务作区分) [本项目内使用Minecraft的UUID]
         String account = EusAccountPro.uuid;
         //生成密钥,并保存到数据库

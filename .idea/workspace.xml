@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/controller/GoogleAuthDemoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/controller/GoogleAuthDemoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +104,7 @@
       <updated>1586330613266</updated>
       <workItem from="1586330618368" duration="18021000" />
       <workItem from="1586352237180" duration="395000" />
-      <workItem from="1586396849825" duration="2646000" />
+      <workItem from="1586396849825" duration="4080000" />
     </task>
     <servers />
   </component>
