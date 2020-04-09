@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/Database.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
+    <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="Database sketch">
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/DBType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/exception/NotRegistered.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EAPConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EAPConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +20,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -108,7 +115,7 @@
       <workItem from="1586330618368" duration="18021000" />
       <workItem from="1586352237180" duration="395000" />
       <workItem from="1586396849825" duration="4101000" />
-      <workItem from="1586414308231" duration="2961000" />
+      <workItem from="1586414308231" duration="5153000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>
@@ -124,7 +131,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586416827195</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Database sketch">
+      <created>1586417311816</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586417311816</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,7 +148,8 @@
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <MESSAGE value="Code clean up" />
     <MESSAGE value="AuthController sketch" />
-    <option name="LAST_COMMIT_MESSAGE" value="AuthController sketch" />
+    <MESSAGE value="Database sketch" />
+    <option name="LAST_COMMIT_MESSAGE" value="Database sketch" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -159,10 +174,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="622" y="129" key="#com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditorDialog/0.0.1536.824@0.0.1536.824" timestamp="1586336880824" />
-    <state x="1455" y="354" key="CommitChangelistDialog2" timestamp="1586416827039">
+    <state x="1455" y="354" key="CommitChangelistDialog2" timestamp="1586418431226">
       <screen x="0" y="23" width="2560" height="1352" />
     </state>
-    <state x="1455" y="354" key="CommitChangelistDialog2/0.23.2560.1352@0.23.2560.1352" timestamp="1586416827039" />
+    <state x="1455" y="354" key="CommitChangelistDialog2/0.23.2560.1352@0.23.2560.1352" timestamp="1586418431226" />
     <state x="546" y="130" key="DetectedRootsChooserDialog" timestamp="1586336873813">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -195,10 +210,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="272" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1586352304825" />
-    <state x="1118" y="476" key="Vcs.Push.Dialog.v2" timestamp="1586416345206">
+    <state x="1118" y="476" key="Vcs.Push.Dialog.v2" timestamp="1586417466912">
       <screen x="0" y="23" width="2560" height="1352" />
     </state>
-    <state x="1118" y="476" key="Vcs.Push.Dialog.v2/0.23.2560.1352@0.23.2560.1352" timestamp="1586416345206" />
+    <state x="1118" y="476" key="Vcs.Push.Dialog.v2/0.23.2560.1352@0.23.2560.1352" timestamp="1586417466912" />
     <state x="479" y="239" key="com.intellij.ide.util.TipDialog" timestamp="1586396861872">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -207,10 +222,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="508" y="313" key="com.intellij.jarRepository.RepositoryAttachDialog-DOWNLOAD/0.0.1536.824@0.0.1536.824" timestamp="1586336844606" />
-    <state x="1323" y="660" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586416833743">
+    <state x="1323" y="660" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586418296357">
       <screen x="0" y="23" width="2560" height="1352" />
     </state>
-    <state x="1323" y="660" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.2560.1352@0.23.2560.1352" timestamp="1586416833743" />
+    <state x="1323" y="660" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.2560.1352@0.23.2560.1352" timestamp="1586418296357" />
     <state x="425" y="187" width="672" height="677" key="run.anything.popup" timestamp="1586350657451">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
