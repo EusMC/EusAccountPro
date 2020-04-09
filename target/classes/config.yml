@@ -1,1 +1,2 @@
-QRcode:
+Accounts:
+  record: uuid #请填写uuid或者name，正版服务器推荐使用uuid进行记录 【若能实现，加上最好】

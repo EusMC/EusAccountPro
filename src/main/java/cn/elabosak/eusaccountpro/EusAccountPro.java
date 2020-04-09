@@ -1,9 +1,13 @@
 package cn.elabosak.eusaccountpro;
 
+import cn.elabosak.eusaccountpro.controller.GoogleAuthDemoController;
+import cn.elabosak.eusaccountpro.util.GoogleAuthenticatorUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +18,9 @@ import java.util.UUID;
 
 public final class EusAccountPro extends JavaPlugin {
 
-    public Map<Player,String> tempcode = new HashMap<Player,String>();
-    public Map<UUID, String> uuid = new HashMap<UUID, String>();
+    public static Map<Player,String> tempcode = new HashMap<Player,String>();
+    public static String uuid;
+    public HashMap<Player, Inventory> oldInvs = new HashMap<Player, Inventory>();
 
     //这里要写一个监听器，监听玩家在线、离线
 
@@ -43,6 +48,12 @@ public final class EusAccountPro extends JavaPlugin {
                 Player p = (Player) sender;
                 if (args[0].equalsIgnoreCase("create")){
                     //输入eap create，即判断后创建2fa
+                    p.sendMessage(ChatColor.GOLD.BOLD+"+ EAP -> "+ChatColor.GREEN.BOLD+"正在创建二步验证QRcode...");
+                    oldInvs.put(p,p.getInventory());
+                    p.sendMessage(ChatColor.GOLD.BOLD+"+ EAP -> "+ChatColor.GREEN.BOLD+"物品栏已保存...");
+                    p.getInventory().clear();
+                    uuid = p.getUniqueId().randomUUID().toString();
+                    new GoogleAuthDemoController().googleAuthQrCode();
                     return true;
                 }else{
                     if (args[0].equalsIgnoreCase("delete")){
@@ -77,7 +88,7 @@ public final class EusAccountPro extends JavaPlugin {
                 }else{
                     //待加入：先行判断，1.该玩家是否已激活2fa 2.该玩家是否已经验证过2fa
                     String code = args[0];
-                    uuid.put(p.getPlayer().getUniqueId(),code);
+
 
                 }
             }else{

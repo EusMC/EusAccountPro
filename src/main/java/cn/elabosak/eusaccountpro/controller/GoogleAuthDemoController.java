@@ -3,6 +3,7 @@ package cn.elabosak.eusaccountpro.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +12,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import cn.elabosak.eusaccountpro.EusAccountPro;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import cn.elabosak.eusaccountpro.util.GoogleAuthenticatorUtils;
 import cn.elabosak.eusaccountpro.util.QRCodeUtils;
+import cn.elabosak.eusaccountpro.EusAccountPro;
 
 public class GoogleAuthDemoController {
     /**
@@ -25,9 +26,9 @@ public class GoogleAuthDemoController {
     @RequestMapping("/googleAuthQrCode")
     public void googleAuthQrCode(HttpServletResponse response) {
         //服务名称(一般定义为常量) 如 Google Github 印象笔记 等(不参与运算,只是为了与其他服务作区分)
-        String issuer = "EusMC";
+        String issuer = "EusMC二步验证";
         //获取用户名称(从数据库或者缓存),可以是登录名,邮箱,手机(不参与运算,只是为了与其他服务作区分) [本项目内使用Minecraft的UUID]
-        String account = "uuid";
+        String account = EusAccountPro.uuid;
         //生成密钥,并保存到数据库
         String secretKey = GoogleAuthenticatorUtils.createSecretKey();
         //生成二维码信息
