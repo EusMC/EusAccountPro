@@ -7,8 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
-      <change afterPath="$PROJECT_DIR$/README-EN.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README-EN.md" beforeDir="false" afterPath="$PROJECT_DIR$/README-EN.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +117,7 @@
       <workItem from="1586414308231" duration="2961000" />
       <workItem from="1586479334702" duration="200000" />
       <workItem from="1586479565200" duration="10681000" />
-      <workItem from="1586507505291" duration="7580000" />
+      <workItem from="1586507505291" duration="7826000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>
