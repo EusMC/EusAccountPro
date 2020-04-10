@@ -8,21 +8,18 @@ import java.util.UUID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
 import org.apache.commons.io.*;
-import org.bukkit.util.FileUtil;
+
 
 
 public class JsonDB extends Database {
-    Gson gson = new Gson();
 
     @Override
     public String getSecretKey(UUID uuid) throws IOException {
-        String uuid_string = uuid.toString();
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("/JsonDB/players/"+uuid_string+".json");
         if(!file.exists()){
-            //文件不存在，返回false
-            return null;
+            return null; //文件不存在，返回null
         }else{
             String file_string = FileUtils.readFileToString(file, "UTF-8");
             JSONObject jsonObject = JSON.parseObject(file_string);
@@ -38,7 +35,7 @@ public class JsonDB extends Database {
 
     @Override
     public boolean updatePlayer(UUID uuid, String secretKey) {
-        String uuid_string = uuid.toString();
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         JSONObject jsonObject = new JSONObject();
         Map<String,String> data = new HashMap<String,String>();
         data.put("uuid",uuid_string);
@@ -60,11 +57,10 @@ public class JsonDB extends Database {
 
     @Override
     public boolean isPlayerRegistered(UUID uuid) {
-        String uuid_string = uuid.toString();
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("/JsonDB/players/"+uuid_string+".json");
         if(!file.exists()){
-            //文件不存在，返回false
-            return false;
+            return false; //文件不存在，返回false
         }else{
             return true;
         }
@@ -72,11 +68,10 @@ public class JsonDB extends Database {
 
     @Override
     public boolean deletePlayer(UUID uuid) {
-        String uuid_string = uuid.toString();
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("/JsonDB/players/"+uuid_string+".json");
         if(!file.exists()){
-            //文件不存在，返回false
-            return false;
+            return false; //文件不存在，返回false
         }else{
             file.delete();
             return true;
