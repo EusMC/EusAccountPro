@@ -5,6 +5,7 @@ import cn.elabosak.eusaccountpro.database.Database;
 import cn.elabosak.eusaccountpro.database.JsonDB;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import com.google.gson.Gson;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -139,8 +140,20 @@ public final class EusAccountPro extends JavaPlugin {
                     //什么都没有，显示使用方法
                     return true;
                 } else {
-                    String player = args[0]; //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录
-
+                    Player target = Bukkit.getPlayer(args[0]); //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录
+                    String uuid = target.getUniqueId().toString();
+                    File file = new File("/players/"+uuid+".json");
+                    if (!file.exists()) {
+                        sender.sendMessage(ChatColor.RED.BOLD + "该玩家尚未注册");
+                        return true;
+                    }else{
+                        try{
+                            file.delete();
+                            sender.sendMessage(ChatColor.GREEN.BOLD + "玩家 " + args[0] + " 的二步验证记录已删除");
+                        }catch (RuntimeException e){
+                            sender.sendMessage(ChatColor.RED.BOLD + "运行异常," + "玩家 " + args[0] + " 的二步验证记录无法删除");
+                        }
+                    }
                 }
             } else {
                 sender.sendMessage(ChatColor.BOLD + "你没有使用此命令的权限");
