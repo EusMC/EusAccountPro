@@ -4,6 +4,7 @@ import cn.elabosak.eusaccountpro.controller.AuthController;
 import cn.elabosak.eusaccountpro.database.Database;
 import cn.elabosak.eusaccountpro.database.JsonDB;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
+import cn.elabosak.eusaccountpro.utils.Authenticator;
 import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,7 +76,8 @@ public final class EusAccountPro extends JavaPlugin {
                     oldInvs.put(p, p.getInventory());
                     p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
                     p.getInventory().clear();
-                    uuid = p.getUniqueId().toString();
+                    String uuid_string = p.getUniqueId().toString();
+                    String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
                     // TODO Generate & display QRCode
                     //Authenticator.generateSecretKey();
                     return true;

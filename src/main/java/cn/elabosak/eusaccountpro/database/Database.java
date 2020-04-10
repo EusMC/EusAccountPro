@@ -1,11 +1,17 @@
 package cn.elabosak.eusaccountpro.database;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.UUID;
 
 public abstract class Database {
 
-    public abstract String getSecretKey(UUID uuid);
+    public abstract String getSecretKey(UUID uuid) throws IOException; //请求输入玩家uuid，生成密钥
 
-    public abstract boolean updatePlayer(UUID uuid, String secretKey);
+    public abstract boolean updatePlayer(UUID uuid, String secretKey); //请求输入玩家uuid和密钥进行玩家二步验证数据初始化
+
+    public abstract boolean isPlayerRegistered(UUID uuid); //请求输入玩家uuid判断玩家是否已注册
+
+    public abstract boolean deletePlayer(UUID uuid); //请求输入玩家uuid和数据库类型进行删除
 
 }
