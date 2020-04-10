@@ -13,6 +13,7 @@
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
           <factory-entry name="Entities" />
+          <factory-entry name="EusAccountPro" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>

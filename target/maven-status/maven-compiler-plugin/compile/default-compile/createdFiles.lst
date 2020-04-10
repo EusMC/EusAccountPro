@@ -1,5 +1,9 @@
-org\ietf\tools\TOTP.class
-cn\elabosak\eusaccountpro\controller\GoogleAuthDemoController.class
-cn\elabosak\eusaccountpro\util\GoogleAuthenticatorUtils.class
+cn\elabosak\eusaccountpro\utils\Authenticator.class
+cn\elabosak\eusaccountpro\EusAccountPro$1.class
+cn\elabosak\eusaccountpro\exception\NotRegistered.class
+cn\elabosak\eusaccountpro\controller\AuthController.class
+cn\elabosak\eusaccountpro\database\Database.class
+cn\elabosak\eusaccountpro\EAPConfig.class
 cn\elabosak\eusaccountpro\EusAccountPro.class
-cn\elabosak\eusaccountpro\util\QRCodeUtils.class
+cn\elabosak\eusaccountpro\database\DBType.class
+cn\elabosak\eusaccountpro\database\JsonDB.class
