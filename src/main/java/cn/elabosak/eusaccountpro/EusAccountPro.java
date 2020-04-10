@@ -6,34 +6,42 @@ import cn.elabosak.eusaccountpro.database.JsonDB;
 import cn.elabosak.eusaccountpro.database.MySQL;
 import cn.elabosak.eusaccountpro.database.SQLite;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
+import cn.elabosak.eusaccountpro.handler.onMap;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
+import cn.elabosak.eusaccountpro.utils.MapRender;
 import com.google.gson.Gson;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import com.google.zxing.WriterException;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.UUID;
+
+import static cn.elabosak.eusaccountpro.utils.Authenticator.getTOTPCode;
 
 
 public final class EusAccountPro extends JavaPlugin {
 
-    Gson gson = new Gson();
-    public static Map<Player, String> tempCode = new HashMap<Player, String>();
-    public static String uuid;
     public HashMap<Player, Inventory> oldInvs = new HashMap<Player, Inventory>();
     public HashMap<Player, Boolean> loggedIn = new HashMap<>();
+    public HashMap<Player, Boolean> verify = new HashMap<>();
 
     AuthController authController;
     Database database;
@@ -82,13 +90,13 @@ public final class EusAccountPro extends JavaPlugin {
             Location loc = database.getSafePoint(event.getPlayer().getUniqueId());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
             event.getPlayer().teleport(loc);
-            while(loggedIn.put(event.getPlayer(),false)){ //重复判断状态
-                if(loggedIn.put(event.getPlayer(), true)){
-                    event.getPlayer().teleport(odLoc);
-                    event.getPlayer().setGameMode(GameMode.SURVIVAL);
+            while(loggedIn.get(event.getPlayer()) == false){ //重复判断状态
+                if(loggedIn.get(event.getPlayer()) == true){
                     break;
                 }
             }
+            event.getPlayer().teleport(odLoc);
+            event.getPlayer().setGameMode(GameMode.SURVIVAL);
         }
     }
 
@@ -106,18 +114,29 @@ public final class EusAccountPro extends JavaPlugin {
                             oldInvs.put(p, p.getInventory());
                             p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
                             p.getInventory().clear();
-                            String uuid_string = p.getUniqueId().toString();
                             String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                            // TODO Generate & display QRCode
-                            String get_QRCode = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getServer().getName() , p.getName());
-
-
+                            authController.register(p,secretKey); //注册
+                            String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getServer().getName() , p.getName());
+                            Authenticator.createQRCode(QRCode_url, "/QRCode/"+uuid.toString()+".png", 300 ,300);
+                            p.getInventory().addItem(new ItemStack(Material.MAP));
+                            getServer().getPluginManager().registerEvents(new onMap(),this); //onMap监听器开启
+                            verify.put(p,false);
+                            p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                            while(verify.get(p) == false){
+                                if (verify.get(p) == true){
+                                    break;
+                                }
+                            }
+                            PlayerInteractEvent.getHandlerList().unregister(new onMap()); //onMap监听器关闭
+                            p.getInventory().clear();
+                            p.getInventory().addItem((ItemStack) oldInvs.get(p));
+                            p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
                             return true;
                         }else{
                             p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
                             return true;
                         }
-                    } catch (IOException e) {
+                    } catch (IOException | WriterException e) {
                         e.printStackTrace();
                         p.sendMessage(ChatColor.RED+"程序异常，创建失败");
                         return true;
@@ -153,8 +172,28 @@ public final class EusAccountPro extends JavaPlugin {
                                 //仅输入eap，显示使用帮助
                                 return true;
                             } else {
-                                //错误指令，提示后显示使用帮助
-                                return true;
+                                if (args[0].equalsIgnoreCase("verify")){
+                                    if (sender instanceof Player) {
+                                        Scanner scanner = new Scanner(args[1]);
+                                        String code = scanner.nextLine();
+                                        try {
+                                            if (code.equals(getTOTPCode(database.getSecretKey(p.getUniqueId())))) {
+                                                p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
+                                            } else {
+                                                p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        verify.put(p,true);
+                                    }else{
+                                        sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
+                                        return true;
+                                    }
+                                }else{
+                                    //错误指令
+                                    return true;
+                                }
                             }
                         }
                     }
