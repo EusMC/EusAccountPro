@@ -4,6 +4,8 @@ import cn.elabosak.eusaccountpro.EusAccountPro;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+
 import static cn.elabosak.eusaccountpro.utils.Authenticator.getTOTPCode;
 
 /**
@@ -31,7 +33,7 @@ public class AuthController {
      * @param player
      * @return null: player not registered
      */
-    public String getSecretKey(Player player) {
+    public String getSecretKey(Player player) throws IOException {
         return plugin.getDatabase().getSecretKey(player.getUniqueId());
     }
 
@@ -41,7 +43,7 @@ public class AuthController {
      * @param code
      * @return
      */
-    public boolean verify(Player player, String code) throws NotRegistered {
+    public boolean verify(Player player, String code) throws NotRegistered, IOException {
         String secretKey = getSecretKey(player);
         if (secretKey == null) throw new NotRegistered(); // player not registered
 

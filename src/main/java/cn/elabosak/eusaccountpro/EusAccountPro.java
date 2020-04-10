@@ -3,18 +3,25 @@ package cn.elabosak.eusaccountpro;
 import cn.elabosak.eusaccountpro.controller.AuthController;
 import cn.elabosak.eusaccountpro.database.Database;
 import cn.elabosak.eusaccountpro.database.JsonDB;
+import cn.elabosak.eusaccountpro.database.MySQL;
+import cn.elabosak.eusaccountpro.database.SQLite;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
 import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -31,8 +38,6 @@ public final class EusAccountPro extends JavaPlugin {
     AuthController authController;
     Database database;
 
-    //这里要写一个监听器，监听玩家在线、离线
-
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -48,11 +53,14 @@ public final class EusAccountPro extends JavaPlugin {
         switch (EAPConfig.dbType) {
             case SQLite:
                 // TODO SQLite support
+                database = new SQLite();
                 break;
             case MySQL:
                 // TODO MySQL support
+                database = new MySQL();
                 break;
             case JSON:
+                database = new JsonDB();
             default:
                 database = new JsonDB();
         }
@@ -65,6 +73,25 @@ public final class EusAccountPro extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "--- EusAccountPro Offline × ---");
     }
 
+    // TODO 这里要写一个监听器，监听玩家在线、离线
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
+        if(database.isPlayerRegistered(event.getPlayer().getUniqueId()) == true){
+            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户");
+            Location odLoc = event.getPlayer().getLocation();
+            Location loc = database.getSafePoint(event.getPlayer().getUniqueId());
+            event.getPlayer().setGameMode(GameMode.ADVENTURE);
+            event.getPlayer().teleport(loc);
+            while(loggedIn.put(event.getPlayer(),false)){ //重复判断状态
+                if(loggedIn.put(event.getPlayer(), true)){
+                    event.getPlayer().teleport(odLoc);
+                    event.getPlayer().setGameMode(GameMode.SURVIVAL);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("eap")) {
@@ -72,28 +99,61 @@ public final class EusAccountPro extends JavaPlugin {
                 Player p = (Player) sender;
                 if (args[0].equalsIgnoreCase("create")) {
                     //输入eap create，即判断后创建2fa
-                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRcode...");
-                    oldInvs.put(p, p.getInventory());
-                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
-                    p.getInventory().clear();
-                    String uuid_string = p.getUniqueId().toString();
-                    String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                    // TODO Generate & display QRCode
-                    //Authenticator.generateSecretKey();
-                    return true;
+                    UUID uuid = p.getUniqueId();
+                    try {
+                        if(database.getSafePoint(uuid) != null){
+                            p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRcode...");
+                            oldInvs.put(p, p.getInventory());
+                            p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
+                            p.getInventory().clear();
+                            String uuid_string = p.getUniqueId().toString();
+                            String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
+                            // TODO Generate & display QRCode
+                            String get_QRCode = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getServer().getName() , p.getName());
+
+
+                            return true;
+                        }else{
+                            p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
+                            return true;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        p.sendMessage(ChatColor.RED+"程序异常，创建失败");
+                        return true;
+                    }
+
                 } else {
                     if (args[0].equalsIgnoreCase("delete")) {
                         //输入eap delete，即判断后删除2fa
-                        return true;
+                        if(database.isPlayerRegistered(p.getUniqueId()) == true){
+                            if (database.deletePlayer(p.getUniqueId()) == true){
+                                p.sendMessage(ChatColor.GREEN.BOLD + "删除成功");
+                                return true;
+                            }else{
+                                p.sendMessage(ChatColor.RED + "删除失败");
+                                return true;
+                            }
+                        }else{
+                            p.sendMessage(ChatColor.RED+"尚未注册");
+                            return true;
+                        }
                     } else {
                         if (args[0].equalsIgnoreCase("safepoint")) {
                             //输入eap safepoint，当玩家激活了2fa后，需要验证2fa的时候，自动传送到这个坐标，以免遭遇伤害
+                            Location safepoint = p.getLocation();
+                            UUID uuid = p.getUniqueId();
+                            if(database.SafePoint(uuid,safepoint) == true){
+                                p.sendMessage(ChatColor.GREEN.BOLD+"安全点已记录");
+                            }else{
+                                p.sendMessage(ChatColor.RED+"安全点记录失败");
+                            }
                         } else {
                             if (args[0].equalsIgnoreCase("")) {
                                 //仅输入eap，显示使用帮助
                                 return true;
                             } else {
-                                //错误指令，提示后显示2使用帮助
+                                //错误指令，提示后显示使用帮助
                                 return true;
                             }
                         }
@@ -127,8 +187,8 @@ public final class EusAccountPro extends JavaPlugin {
                             // Invalid code
                             p.sendMessage(ChatColor.YELLOW + "认证失败");
                         }
-                    } catch (NotRegistered e) {
-                        p.sendMessage(ChatColor.RED + "尚未注册");
+                    } catch (NotRegistered | IOException e) {
+                        p.sendMessage(ChatColor.RED + "尚未注册或程序异常");
                     }
                 }
             } else {

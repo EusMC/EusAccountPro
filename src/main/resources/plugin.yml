@@ -13,7 +13,7 @@ commands:
     permission: EusAccountPro.common
   2fa:
     description: 验证2fa
-    usage: /2fa <code>
+    usage: /2fa <Code>
     permission: EusAccountPro.common
   eapre:
     description: 删除其他玩家的2fa
