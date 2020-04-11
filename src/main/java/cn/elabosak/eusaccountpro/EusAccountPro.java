@@ -84,6 +84,7 @@ public final class EusAccountPro extends JavaPlugin {
     // TODO 这里要写一个监听器，监听玩家在线、离线
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
+        verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
             event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户");
             Location odLoc = event.getPlayer().getLocation();
@@ -110,33 +111,37 @@ public final class EusAccountPro extends JavaPlugin {
                         //输入eap create，即判断后创建2fa
                         UUID uuid = p.getUniqueId();
                         try {
-                            if(getDatabase().getSafePoint(uuid) != null){
-                                p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRcode...");
-                                oldInvs.put(p, p.getInventory());
-                                p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
-                                p.getInventory().clear();
-                                String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                                authController.register(p,secretKey); //注册
-                                String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
-                                Authenticator.createQRCode(QRCode_url, "QRCode/"+uuid.toString()+".png", 300 ,300);
-                                p.getInventory().addItem(new ItemStack(Material.MAP));
-                                Listener listener = new onMapInitialize();
-                                getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
-                                verify.put(p,false);
-                                p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                while(!verify.get(p)){
-                                    if (verify.get(p)){
-                                        break;
+                            if(args.length == 1){
+                                if(getDatabase().getSafePoint(uuid) != null){
+                                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
+                                    oldInvs.put(p, p.getInventory());
+                                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
+                                    p.getInventory().clear();
+                                    String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
+                                    authController.register(p,secretKey); //注册
+                                    String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
+                                    Authenticator.createQRCode(QRCode_url, getDataFolder().getPath()+"QRCode/"+uuid.toString()+".png", 300 ,300);
+                                    p.getInventory().addItem(new ItemStack(Material.MAP));
+                                    Listener listener = new onMapInitialize();
+                                    getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
+                                    verify.put(p,false);
+                                    p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                                    while(!verify.get(p)){
+                                        if (verify.get(p)){
+                                            break;
+                                        }
                                     }
+                                    PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
+                                    p.getInventory().clear();
+                                    p.getInventory().addItem((ItemStack) oldInvs.get(p));
+                                    p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
+                                    return true;
+                                }else{
+                                    p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
+                                    return true;
                                 }
-                                PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
-                                p.getInventory().clear();
-                                p.getInventory().addItem((ItemStack) oldInvs.get(p));
-                                p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
-                                return true;
                             }else{
-                                p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
-                                return true;
+                                p.sendMessage(ChatColor.RED+"数据过量，请使用 /eap creat");
                             }
                         } catch (IOException | WriterException e) {
                             e.printStackTrace();
@@ -164,29 +169,42 @@ public final class EusAccountPro extends JavaPlugin {
                                 //输入eap safepoint，当玩家激活了2fa后，需要验证2fa的时候，自动传送到这个坐标，以免遭遇伤害
                                 Location safepoint = p.getLocation();
                                 UUID uuid = p.getUniqueId();
-                                if(getDatabase().SafePoint(uuid, safepoint)){
-                                    p.sendMessage(ChatColor.GREEN.BOLD+"安全点已记录");
-                                    return true;
-                                }else{
-                                    p.sendMessage(ChatColor.BOLD.RED+"安全点记录失败");
-                                    return true;
+                                try {
+                                    if(getDatabase().SafePoint(uuid, safepoint)){
+                                        p.sendMessage(ChatColor.GREEN.BOLD+"安全点已记录");
+                                        return true;
+                                    }else{
+                                        p.sendMessage(ChatColor.BOLD.RED+"安全点记录失败");
+                                        return true;
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
                             } else {
                                 if (args[0].equalsIgnoreCase("verify")){
                                     if (sender instanceof Player) {
-                                        Scanner scanner = new Scanner(args[1]);
-                                        String code = scanner.nextLine();
-                                        try {
-                                            if (code.equals(getTOTPCode(getDatabase().getSecretKey(p.getUniqueId())))) {
-                                                p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
-                                                verify.put(p,true);
+                                        if(!verify.get(p)){
+                                            if(args.length != 2){
+                                                p.sendMessage(ChatColor.RED+"请提供动态密码");
                                                 return true;
-                                            } else {
-                                                p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
-                                                return true;
+                                            }else{
+                                                Scanner scanner = new Scanner(args[1]);
+                                                String code = scanner.nextLine();
+                                                try {
+                                                    if (code.equals(getTOTPCode(getDatabase().getSecretKey(p.getUniqueId())))) {
+                                                        p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
+                                                        verify.put(p,true);
+                                                        return true;
+                                                    } else {
+                                                        p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
+                                                        return true;
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                                        }else{
+                                            p.sendMessage(ChatColor.RED+"你不需要验证");
                                         }
                                     }else{
                                         sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");

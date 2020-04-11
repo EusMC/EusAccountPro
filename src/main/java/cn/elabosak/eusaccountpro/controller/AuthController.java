@@ -24,7 +24,7 @@ public class AuthController {
      * @param secretKey
      * @return
      */
-    public boolean register(Player player, String secretKey) {
+    public boolean register(Player player, String secretKey) throws IOException {
         return plugin.getDatabase().updatePlayer(player.getUniqueId(), secretKey);
     }
 

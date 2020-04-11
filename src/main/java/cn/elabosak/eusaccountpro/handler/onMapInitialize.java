@@ -13,6 +13,9 @@ import org.bukkit.plugin.Plugin;
 import javax.swing.*;
 
 public class onMapInitialize implements Listener {
+
+    EusAccountPro plugin;
+
     @EventHandler
     public void onMapInitialize(MapInitializeEvent event){
         MapView map = event.getMap();
@@ -21,7 +24,7 @@ public class onMapInitialize implements Listener {
         map.addRenderer(new MapRenderer() {
             @Override
             public void render(MapView view, MapCanvas canvas, Player player) {
-                canvas.drawImage(20,20,new ImageIcon("QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                canvas.drawImage(20,20,new ImageIcon(plugin.getDataFolder().getPath()+"QRCode/"+player.getUniqueId().toString()+".png").getImage());
             }
         });
     }
