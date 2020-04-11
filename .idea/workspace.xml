@@ -11,16 +11,7 @@
       <change beforePath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/utils/MapRender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/utils/MapRender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/database/JsonDB.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/database/JsonDB.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +121,7 @@
       <workItem from="1586479334702" duration="200000" />
       <workItem from="1586479565200" duration="10681000" />
       <workItem from="1586507505291" duration="19438000" />
-      <workItem from="1586561805873" duration="5916000" />
+      <workItem from="1586561805873" duration="7082000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>

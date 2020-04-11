@@ -192,14 +192,14 @@ public final class EusAccountPro extends JavaPlugin {
                                 }
                             } else {
                                 //仅输入eap或指令错误，显示使用帮助
-                                p.sendMessage(ChatColor.GREEN.BOLD+"+++++ EusAccountPro +++++");
+                                p.sendMessage(ChatColor.RED.BOLD+"+++++ EusAccountPro +++++");
                                 p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
                                 p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
                                 p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
                                 p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
                                 p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
                                 p.sendMessage(ChatColor.BLUE+"/eapre [玩家名] 强制删除二步验证 (需要管理员权限)");
-                                p.sendMessage(ChatColor.GREEN.BOLD+"----- EusAccountPro -----");
+                                p.sendMessage(ChatColor.RED.BOLD+"----- EusAccountPro -----");
                                 return true;
                                 }
                             }
@@ -230,12 +230,15 @@ public final class EusAccountPro extends JavaPlugin {
                             // Success
                             loggedIn.put(p, true);
                             p.sendMessage(ChatColor.GREEN + "认证成功");
+                            return true;
                         } else {
                             // Invalid code
                             p.sendMessage(ChatColor.YELLOW + "认证失败");
+                            return true;
                         }
                     } catch (NotRegistered | IOException e) {
                         p.sendMessage(ChatColor.RED + "尚未注册或程序异常");
+                        return true;
                     }
                 }
             } else {
