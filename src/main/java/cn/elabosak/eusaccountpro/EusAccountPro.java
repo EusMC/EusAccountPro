@@ -86,7 +86,7 @@ public final class EusAccountPro extends JavaPlugin {
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
-            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户");
+            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户 +");
             Location odLoc = event.getPlayer().getLocation();
             Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
@@ -98,6 +98,9 @@ public final class EusAccountPro extends JavaPlugin {
             }
             event.getPlayer().teleport(odLoc);
             event.getPlayer().setGameMode(GameMode.SURVIVAL);
+        }else{
+            event.getPlayer().sendMessage(ChatColor.BLUE.BOLD+"- EusAccountPro 已推出 -");
+            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"- 使用 /eap create 创建二步验证 -");
         }
     }
 
@@ -110,44 +113,56 @@ public final class EusAccountPro extends JavaPlugin {
                     if (args[0].equalsIgnoreCase("create")) {
                         //输入eap create，即判断后创建2fa
                         UUID uuid = p.getUniqueId();
-                        try {
                             if(args.length == 1){
-                                if(getDatabase().getSafePoint(uuid) != null){
-                                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
-                                    oldInvs.put(p, p.getInventory());
-                                    p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
-                                    p.getInventory().clear();
-                                    String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                                    authController.register(p,secretKey); //注册
-                                    String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
-                                    Authenticator.createQRCode(QRCode_url, getDataFolder().getPath()+"QRCode/"+uuid.toString()+".png", 300 ,300);
-                                    p.getInventory().addItem(new ItemStack(Material.MAP));
-                                    Listener listener = new onMapInitialize();
-                                    getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
-                                    verify.put(p,false);
-                                    p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                    while(!verify.get(p)){
-                                        if (verify.get(p)){
-                                            break;
+                                try {
+                                    if(getDatabase().getSafePoint(uuid) != null){
+                                        p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
+                                        oldInvs.put(p, p.getInventory());
+                                        p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
+                                        p.getInventory().clear();
+                                        String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
+                                        try {
+                                            authController.register(p,secretKey); //注册
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                            p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
+                                            return true;
                                         }
+                                        String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
+                                        try {
+                                            Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/"+uuid.toString()+".png", 300 ,300);
+                                        } catch (WriterException | IOException e) {
+                                            e.printStackTrace();
+                                            p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
+                                            return true;
+                                        }
+                                        p.getInventory().addItem(new ItemStack(Material.MAP));
+                                        Listener listener = new onMapInitialize();
+                                        getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
+                                        verify.put(p,false);
+                                        p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                                        while(!verify.get(p)){
+                                            if (verify.get(p)){
+                                                break;
+                                            }
+                                        }
+                                        PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
+                                        p.getInventory().clear();
+                                        p.getInventory().addItem((ItemStack) oldInvs.get(p));
+                                        p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
+                                        return true;
+                                    }else{
+                                        p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
+                                        return true;
                                     }
-                                    PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
-                                    p.getInventory().clear();
-                                    p.getInventory().addItem((ItemStack) oldInvs.get(p));
-                                    p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
-                                    return true;
-                                }else{
-                                    p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    p.sendMessage(ChatColor.RED+"程序异常，进行getSafePoint()异常");
                                     return true;
                                 }
                             }else{
                                 p.sendMessage(ChatColor.RED+"数据过量，请使用 /eap creat");
                             }
-                        } catch (IOException | WriterException e) {
-                            e.printStackTrace();
-                            p.sendMessage(ChatColor.RED+"程序异常，创建失败");
-                            return true;
-                        }
 
                     } else {
                         if (args[0].equalsIgnoreCase("delete")) {
@@ -167,7 +182,7 @@ public final class EusAccountPro extends JavaPlugin {
                         } else {
                             if (args[0].equalsIgnoreCase("safepoint")) {
                                 //输入eap safepoint，当玩家激活了2fa后，需要验证2fa的时候，自动传送到这个坐标，以免遭遇伤害
-                                Location safepoint = p.getLocation();
+                                Location safepoint = new Location(p.getWorld(),p.getLocation().getX(),p.getLocation().getY(),p.getLocation().getZ());
                                 UUID uuid = p.getUniqueId();
                                 try {
                                     if(getDatabase().SafePoint(uuid, safepoint)){
