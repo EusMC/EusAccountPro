@@ -9,7 +9,7 @@ website: https://github.com/ElaBosak233/EusAccountPro
 commands:
   eap:
     description: EusAccountPro的主命令
-    usage: /eap
+    usage: /eap [子命令]
     permission: EusAccountPro.common
   2fa:
     description: 验证2fa
@@ -17,7 +17,7 @@ commands:
     permission: EusAccountPro.common
   eapre:
     description: 删除其他玩家的2fa
-    usage: /eapre <玩家名>
+    usage: /eapre [玩家名]
     permission: EusAccountPro.admin
 
 permissions:
