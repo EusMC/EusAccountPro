@@ -84,14 +84,14 @@ public final class EusAccountPro extends JavaPlugin {
     // TODO 这里要写一个监听器，监听玩家在线、离线
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
-        if(database.isPlayerRegistered(event.getPlayer().getUniqueId()) == true){
+        if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
             event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户");
             Location odLoc = event.getPlayer().getLocation();
-            Location loc = database.getSafePoint(event.getPlayer().getUniqueId());
+            Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
             event.getPlayer().teleport(loc);
-            while(loggedIn.get(event.getPlayer()) == false){ //重复判断状态
-                if(loggedIn.get(event.getPlayer()) == true){
+            while(!loggedIn.get(event.getPlayer())){ //重复判断状态
+                if(loggedIn.get(event.getPlayer())){
                     break;
                 }
             }
@@ -109,7 +109,7 @@ public final class EusAccountPro extends JavaPlugin {
                     //输入eap create，即判断后创建2fa
                     UUID uuid = p.getUniqueId();
                     try {
-                        if(database.getSafePoint(uuid) != null){
+                        if(getDatabase().getSafePoint(uuid) != null){
                             p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRcode...");
                             oldInvs.put(p, p.getInventory());
                             p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
@@ -117,13 +117,13 @@ public final class EusAccountPro extends JavaPlugin {
                             String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
                             authController.register(p,secretKey); //注册
                             String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getServer().getName() , p.getName());
-                            Authenticator.createQRCode(QRCode_url, "/QRCode/"+uuid.toString()+".png", 300 ,300);
+                            Authenticator.createQRCode(QRCode_url, "plugins\\EusAccountPro\\QRCode\\"+uuid.toString()+".png", 300 ,300);
                             p.getInventory().addItem(new ItemStack(Material.MAP));
                             getServer().getPluginManager().registerEvents(new onMap(),this); //onMap监听器开启
                             verify.put(p,false);
                             p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                            while(verify.get(p) == false){
-                                if (verify.get(p) == true){
+                            while(!verify.get(p)){
+                                if (verify.get(p)){
                                     break;
                                 }
                             }
@@ -145,8 +145,8 @@ public final class EusAccountPro extends JavaPlugin {
                 } else {
                     if (args[0].equalsIgnoreCase("delete")) {
                         //输入eap delete，即判断后删除2fa
-                        if(database.isPlayerRegistered(p.getUniqueId()) == true){
-                            if (database.deletePlayer(p.getUniqueId()) == true){
+                        if(getDatabase().isPlayerRegistered(p.getUniqueId())){
+                            if (getDatabase().deletePlayer(p.getUniqueId())){
                                 p.sendMessage(ChatColor.GREEN.BOLD + "删除成功");
                                 return true;
                             }else{
@@ -162,43 +162,50 @@ public final class EusAccountPro extends JavaPlugin {
                             //输入eap safepoint，当玩家激活了2fa后，需要验证2fa的时候，自动传送到这个坐标，以免遭遇伤害
                             Location safepoint = p.getLocation();
                             UUID uuid = p.getUniqueId();
-                            if(database.SafePoint(uuid,safepoint) == true){
+                            if(getDatabase().SafePoint(uuid, safepoint)){
                                 p.sendMessage(ChatColor.GREEN.BOLD+"安全点已记录");
+                                return true;
                             }else{
-                                p.sendMessage(ChatColor.RED+"安全点记录失败");
+                                p.sendMessage(ChatColor.BOLD.RED+"安全点记录失败");
+                                return true;
                             }
                         } else {
-                            if (args[0].equalsIgnoreCase("")) {
-                                //仅输入eap，显示使用帮助
-                                return true;
-                            } else {
-                                if (args[0].equalsIgnoreCase("verify")){
-                                    if (sender instanceof Player) {
-                                        Scanner scanner = new Scanner(args[1]);
-                                        String code = scanner.nextLine();
-                                        try {
-                                            if (code.equals(getTOTPCode(database.getSecretKey(p.getUniqueId())))) {
-                                                p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
-                                            } else {
-                                                p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                            if (args[0].equalsIgnoreCase("verify")){
+                                if (sender instanceof Player) {
+                                    Scanner scanner = new Scanner(args[1]);
+                                    String code = scanner.nextLine();
+                                    try {
+                                        if (code.equals(getTOTPCode(getDatabase().getSecretKey(p.getUniqueId())))) {
+                                            p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
+                                            verify.put(p,true);
+                                            return true;
+                                        } else {
+                                            p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
+                                            return true;
                                         }
-                                        verify.put(p,true);
-                                    }else{
-                                        sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
-                                        return true;
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
                                 }else{
-                                    //错误指令
+                                    sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
                                     return true;
+                                }
+                            } else {
+                                //仅输入eap或指令错误，显示使用帮助
+                                p.sendMessage(ChatColor.GREEN.BOLD+"+++++ EusAccountPro +++++");
+                                p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
+                                p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
+                                p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
+                                p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
+                                p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
+                                p.sendMessage(ChatColor.BLUE+"/eapre [玩家名] 强制删除二步验证 (需要管理员权限)");
+                                p.sendMessage(ChatColor.GREEN.BOLD+"----- EusAccountPro -----");
+                                return true;
                                 }
                             }
                         }
                     }
-                }
-            } else {
+                } else {
                 sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
                 return true;
             }
@@ -207,8 +214,10 @@ public final class EusAccountPro extends JavaPlugin {
             if (sender instanceof Player) {
                 //获取用户输入
                 Player p = (Player) sender;
-                if (args[0].equals("")) {
+                String code = args[0];
+                if (code == null) {
                     //什么都没有，显示使用方法
+                    sender.sendMessage(ChatColor.RED.BOLD+"数据缺失，请输入 /2fa <code>");
                     return true;
                 } else {
                     //待加入：先行判断，1.该玩家是否已激活2fa 2.该玩家是否已经验证过2fa
@@ -216,7 +225,6 @@ public final class EusAccountPro extends JavaPlugin {
                         p.sendMessage(ChatColor.AQUA + "您已认证");
                         return true;
                     }
-                    String code = args[0];
                     try {
                         if (authController.verify(p, code)) {
                             // Success
@@ -236,28 +244,37 @@ public final class EusAccountPro extends JavaPlugin {
             }
         }
         if (command.getName().equalsIgnoreCase("eapre")) {
-            if (sender.hasPermission("EusAccountPro.admin")) {
-                if (args[0].equals("")) {
-                    //什么都没有，显示使用方法
-                    return true;
-                } else {
-                    Player target = Bukkit.getPlayer(args[0]); //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录
-                    String uuid = target.getUniqueId().toString();
-                    File file = new File("/players/"+uuid+".json");
-                    if (!file.exists()) {
-                        sender.sendMessage(ChatColor.RED.BOLD + "该玩家尚未注册");
+            if (sender instanceof Player){
+                if (sender.hasPermission("EusAccountPro.admin")) {
+                    String input = args[0];
+                    if (input == null) {
+                        //什么都没有，显示使用方法
+                        sender.sendMessage(ChatColor.RED.BOLD+"目标缺失，请输入 /eapre [玩家名]");
                         return true;
-                    }else{
-                        try{
-                            file.delete();
-                            sender.sendMessage(ChatColor.GREEN.BOLD + "玩家 " + args[0] + " 的二步验证记录已删除");
-                        }catch (RuntimeException e){
-                            sender.sendMessage(ChatColor.RED.BOLD + "运行异常," + "玩家 " + args[0] + " 的二步验证记录无法删除");
+                    } else {
+                        Player target = Bukkit.getPlayer(args[0]); //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录
+                        if (target == null){
+                            sender.sendMessage("请填写目标");
+                        }else{
+                            UUID uuid = target.getUniqueId();
+                            if(getDatabase().isPlayerRegistered(uuid)){
+                                if (getDatabase().deletePlayer(uuid)){
+                                    sender.sendMessage(ChatColor.GREEN.BOLD+"删除成功");
+                                }else{
+                                    sender.sendMessage(ChatColor.GREEN.BOLD+"删除失败");
+                                }
+                            }else{
+                                sender.sendMessage(ChatColor.RED.BOLD + "该玩家尚未注册");
+                                return true;
+                            }
                         }
                     }
+                } else {
+                    sender.sendMessage(ChatColor.BOLD + "你没有使用此命令的权限");
                 }
-            } else {
-                sender.sendMessage(ChatColor.BOLD + "你没有使用此命令的权限");
+            }else{
+                sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
+                return true;
             }
         }
         return false;

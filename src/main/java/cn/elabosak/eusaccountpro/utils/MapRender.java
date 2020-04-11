@@ -18,7 +18,7 @@ public class MapRender extends MapRenderer {
     public void render(MapView map, MapCanvas canvas, Player player) {
         BufferedImage img;
         try {
-            img = ImageIO.read(new File(Bukkit.getWorldContainer(),"/QRCode/"+player.getUniqueId().toString()+".png"));
+            img = ImageIO.read(new File(Bukkit.getWorldContainer(),"plugins\\EusAccountPro\\QRCode\\"+player.getUniqueId().toString()+".png"));
         } catch (IOException e) {
             e.printStackTrace();
             return;

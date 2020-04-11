@@ -1,3 +1,5 @@
 Storage:
   # Supported type(CaSe SeNsItIvE): JSON, SQLite, MySQL
   type: JSON
+Account:
+  Server: EusMC

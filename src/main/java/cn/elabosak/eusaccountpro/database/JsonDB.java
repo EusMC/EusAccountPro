@@ -18,7 +18,7 @@ public class JsonDB extends Database {
     @Override
     public String getSecretKey(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("/JsonDB/players/"+uuid_string+".json");
+        File file = new File("plugins\\EusAccountPro\\JsonDB\\players\\"+uuid_string+".json");
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
@@ -42,7 +42,14 @@ public class JsonDB extends Database {
         data.put("uuid",uuid_string);
         data.put("secretKey",secretKey);
         String mapJson = jsonObject.toJSONString(data);
-        File file = new File("/JsonDB/players/"+uuid_string+".json");
+        File mkdirs = new File("plugins\\EusAccountPro\\JsonDB\\Players");
+        if(!mkdirs.exists()){
+            mkdirs.mkdirs();
+        }
+        File file = new File(mkdirs+uuid_string+".json");
+        if(!file.exists()){
+            file.mkdir();
+        }
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             JSONObject.writeJSONString(fileOutputStream,mapJson);
@@ -59,7 +66,7 @@ public class JsonDB extends Database {
     @Override
     public boolean isPlayerRegistered(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("/JsonDB/players/"+uuid_string+".json");
+        File file = new File("plugins\\EusAccountPro\\JsonDB\\players\\"+uuid_string+".json");
         if(!file.exists()){
             return false; //文件不存在，返回false
         }else{
@@ -70,7 +77,7 @@ public class JsonDB extends Database {
     @Override
     public boolean deletePlayer(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("/JsonDB/players/"+uuid_string+".json");
+        File file = new File("plugins\\EusAccountPro\\JsonDB\\players\\"+uuid_string+".json");
         if(!file.exists()){
             return false; //文件不存在，返回false
         }else{
@@ -88,7 +95,14 @@ public class JsonDB extends Database {
         data.put("uuid",uuid_string);
         data.put("safepoint",safepoint_string);
         String mapJson = jsonObject.toJSONString(data);
-        File file = new File("/JsonDB/safepoint/"+uuid_string+".json");
+        File mkdirs = new File("plugins\\EusAccountPro\\JsonDB\\safepoint\\");
+        if(!mkdirs.exists()){
+            mkdirs.mkdirs();
+        }
+        File file = new File(mkdirs+uuid_string+".json");
+        if(!file.exists()){
+            file.mkdir();
+        }
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             JSONObject.writeJSONString(fileOutputStream,mapJson);
@@ -105,7 +119,7 @@ public class JsonDB extends Database {
     @Override
     public Location getSafePoint(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("/JsonDB/safepoint/"+uuid_string+".json");
+        File file = new File("plugins\\EusAccountPro\\JsonDB\\safepoint\\"+uuid_string+".json");
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
