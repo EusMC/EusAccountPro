@@ -46,7 +46,9 @@ public class JsonDB extends Database {
         if(!mkdirs.exists()){
             mkdirs.mkdirs();
         }
-        File file = new File(mkdirs+uuid_string+".json");
+        String format = ".json";
+        String file_name = uuid_string + format;
+        File file = new File("JsonDB/Players//"+file_name);
         if(!file.exists()){
             file.mkdir();
         }
@@ -99,7 +101,9 @@ public class JsonDB extends Database {
         if(!mkdirs.exists()){
             mkdirs.mkdirs();
         }
-        File file = new File(mkdirs+uuid_string+".json");
+        String format = ".json";
+        String file_name = uuid_string + format;
+        File file = new File("JsonDB/safepoint//"+file_name);
         if(!file.exists()){
             file.mkdir();
         }
