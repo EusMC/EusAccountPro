@@ -7,12 +7,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/handler/onMapInitialize.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/handler/onMap.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/utils/MapRender.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +123,7 @@
       <workItem from="1586479565200" duration="10681000" />
       <workItem from="1586507505291" duration="19438000" />
       <workItem from="1586561805873" duration="7396000" />
-      <workItem from="1586571410149" duration="2539000" />
+      <workItem from="1586571410149" duration="6508000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>
@@ -161,10 +161,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1586339174147" />
-    <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1586521403749">
+    <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1586576979309">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1586521403749" />
+    <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1586576979309" />
     <state x="1379" y="479" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1352@0.23.2560.1352" timestamp="1586417291643" />
     <state x="522" y="202" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1586492371874">
       <screen x="0" y="0" width="1536" height="824" />

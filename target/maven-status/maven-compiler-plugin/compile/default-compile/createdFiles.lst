@@ -1,13 +1,13 @@
+cn\elabosak\eusaccountpro\handler\onMapInitialize.class
 cn\elabosak\eusaccountpro\utils\Authenticator.class
 cn\elabosak\eusaccountpro\EusAccountPro$1.class
 cn\elabosak\eusaccountpro\exception\NotRegistered.class
 cn\elabosak\eusaccountpro\database\Database.class
-cn\elabosak\eusaccountpro\handler\onMap.class
 cn\elabosak\eusaccountpro\EusAccountPro.class
 cn\elabosak\eusaccountpro\database\DBType.class
 cn\elabosak\eusaccountpro\database\JsonDB.class
+cn\elabosak\eusaccountpro\handler\onMapInitialize$1.class
 cn\elabosak\eusaccountpro\database\MySQL.class
-cn\elabosak\eusaccountpro\utils\MapRender.class
 cn\elabosak\eusaccountpro\database\SQLite.class
 cn\elabosak\eusaccountpro\controller\AuthController.class
 cn\elabosak\eusaccountpro\EAPConfig.class

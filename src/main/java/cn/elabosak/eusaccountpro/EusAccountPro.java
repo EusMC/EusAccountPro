@@ -6,26 +6,26 @@ import cn.elabosak.eusaccountpro.database.JsonDB;
 import cn.elabosak.eusaccountpro.database.MySQL;
 import cn.elabosak.eusaccountpro.database.SQLite;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
-import cn.elabosak.eusaccountpro.handler.onMap;
+import cn.elabosak.eusaccountpro.handler.onMapInitialize;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
-import cn.elabosak.eusaccountpro.utils.MapRender;
-import com.google.gson.Gson;
 import com.google.zxing.WriterException;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -118,9 +118,10 @@ public final class EusAccountPro extends JavaPlugin {
                                 String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
                                 authController.register(p,secretKey); //注册
                                 String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
-                                Authenticator.createQRCode(QRCode_url, "plugins\\EusAccountPro\\QRCode\\"+uuid.toString()+".png", 300 ,300);
+                                Authenticator.createQRCode(QRCode_url, "QRCode/"+uuid.toString()+".png", 300 ,300);
                                 p.getInventory().addItem(new ItemStack(Material.MAP));
-                                getServer().getPluginManager().registerEvents(new onMap(),this); //onMap监听器开启
+                                Listener listener = new onMapInitialize();
+                                getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
                                 verify.put(p,false);
                                 p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
                                 while(!verify.get(p)){
@@ -128,7 +129,7 @@ public final class EusAccountPro extends JavaPlugin {
                                         break;
                                     }
                                 }
-                                PlayerInteractEvent.getHandlerList().unregister(new onMap()); //onMap监听器关闭
+                                PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
                                 p.getInventory().clear();
                                 p.getInventory().addItem((ItemStack) oldInvs.get(p));
                                 p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
