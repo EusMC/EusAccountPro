@@ -7,6 +7,8 @@ import cn.elabosak.eusaccountpro.database.MySQL;
 import cn.elabosak.eusaccountpro.database.SQLite;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import cn.elabosak.eusaccountpro.handler.onMapInitialize;
+import cn.elabosak.eusaccountpro.handler.onPlayer2fa;
+import cn.elabosak.eusaccountpro.handler.onPlayerCommandSend;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
 import com.google.zxing.WriterException;
 import org.bukkit.*;
@@ -15,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -37,6 +40,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     public HashMap<Player, Inventory> oldInvs = new HashMap<Player, Inventory>();
     public HashMap<Player, Boolean> loggedIn = new HashMap<>();
     public HashMap<Player, Boolean> verify = new HashMap<>();
+    public HashMap<Player, Location> odloc = new HashMap<>();
 
     AuthController authController;
     Database database;
@@ -85,32 +89,19 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
             event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户 +");
             Location odLoc = event.getPlayer().getLocation();
+            odloc.put(event.getPlayer(),odLoc);
             Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
             event.getPlayer().teleport(loc);
-//            while(!loggedIn.get(event.getPlayer())){ //重复判断状态
-//                if(loggedIn.get(event.getPlayer())){
-//                    break;
-//                }
-//            }
-            event.getPlayer().teleport(odLoc);
-            event.getPlayer().setGameMode(GameMode.SURVIVAL);
+            event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
+            Listener listener = new onPlayer2fa();
+            getServer().getPluginManager().registerEvents(listener,this);
         }else{
             event.getPlayer().sendMessage(ChatColor.BLUE.BOLD+"- EusAccountPro 已推出 -");
             event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"- 使用 /eap create 创建二步验证 -");
         }
     }
 
-//    public void get_verify(Player p){
-//        int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-//            @Override
-//            public void run() {
-//                if(verify.get(p)){
-//                    Bukkit.getScheduler().cancelTask(taskid);
-//                }
-//            }
-//        },0L,20L);
-//    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -136,7 +127,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
                                             return true;
                                         }
-                                        String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
+                                        String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, p.getName() , getConfig().getString("Account.Display"));
                                         try {
                                             Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
                                         } catch (WriterException | IOException e) {
@@ -149,18 +140,8 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
                                         verify.put(p,false);
                                         p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                        for(verify.get(p)){
-
-                                        }
-//                                        while(!verify.get(p)){
-//                                            if (verify.get(p)){
-//                                                break;
-//                                            }
-//                                        }
-                                        PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
-                                        p.getInventory().clear();
-                                        p.getInventory().addItem((ItemStack) oldInvs.get(p));
-                                        p.sendMessage(ChatColor.GREEN.BOLD+"创建成功");
+                                        Listener listener1 = new onPlayerCommandSend();
+                                        getServer().getPluginManager().registerEvents(listener1,this); //监听玩家指令输入
                                         return true;
                                     }else{
                                         p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
