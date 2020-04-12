@@ -33,11 +33,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.function.LongPredicate;
 
 import static cn.elabosak.eusaccountpro.utils.Authenticator.getTOTPCode;
 
 
-public final class EusAccountPro extends JavaPlugin {
+public final class EusAccountPro extends JavaPlugin implements Listener{
 
     public HashMap<Player, Inventory> oldInvs = new HashMap<Player, Inventory>();
     public HashMap<Player, Boolean> loggedIn = new HashMap<>();
@@ -73,6 +74,8 @@ public final class EusAccountPro extends JavaPlugin {
                 database = new JsonDB();
         }
         authController = new AuthController(this);
+        getServer().getPluginManager().registerEvents(this,this);
+
     }
 
     @Override
