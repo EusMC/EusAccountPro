@@ -24,21 +24,17 @@ public class JsonDB extends Database {
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            String str="";
-            try {
-                FileInputStream in=new FileInputStream(file);
-                // size 为字串的长度 ，这里一次性读完
-                int size=in.available();
-                byte[] buffer=new byte[size];
-                in.read(buffer);
-                in.close();
-                str=new String(buffer,"UTF-8");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                return null;
+            FileReader fileReader = new FileReader(file);
+            BufferedReader br = new BufferedReader(fileReader);
+            StringBuilder sb = new StringBuilder();
+            String temp = "";
+            while ((temp = br.readLine()) != null){
+                sb.append(temp + "\n");
             }
+            br.close();
+            String js = sb.toString();
 //            String file_string = FileUtils.readFileToString(file, "UTF-8");
-            JSONObject jsonObject = JSON.parseObject(str);
+            JSONObject jsonObject = JSON.parseObject(js);
             JSONArray secretKey_json = jsonObject.getJSONArray("secretKey");
             if (secretKey_json != null){
                String secretKey = secretKey_json.toString();
@@ -131,24 +127,21 @@ public class JsonDB extends Database {
     public Location getSafePoint(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/safepoint/"+uuid_string+".json");
+        String str;
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            String str="";
-            try {
-                FileInputStream in=new FileInputStream(file);
-                // size 为字串的长度 ，这里一次性读完
-                int size=in.available();
-                byte[] buffer=new byte[size];
-                in.read(buffer);
-                in.close();
-                str=new String(buffer,"UTF-8");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                return null;
+            FileReader fileReader = new FileReader(file);
+            BufferedReader br = new BufferedReader(fileReader);
+            StringBuilder sb = new StringBuilder();
+            String temp = "";
+            while ((temp = br.readLine()) != null){
+                sb.append(temp + "\n");
             }
+            br.close();
+            String js = sb.toString();
 //            String file_string = FileUtils.readFileToString(file, "UTF-8");
-            JSONObject jsonObject = JSON.parseObject(str);
+            JSONObject jsonObject = JSON.parseObject(js);
             JSONArray safepoint_json = jsonObject.getJSONArray("safepoint");
             if (safepoint_json != null){
                 String safepoint_string = safepoint_json.toString();
