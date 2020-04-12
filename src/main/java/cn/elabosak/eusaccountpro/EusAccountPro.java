@@ -20,6 +20,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,11 +88,11 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
             event.getPlayer().teleport(loc);
-            while(!loggedIn.get(event.getPlayer())){ //重复判断状态
-                if(loggedIn.get(event.getPlayer())){
-                    break;
-                }
-            }
+//            while(!loggedIn.get(event.getPlayer())){ //重复判断状态
+//                if(loggedIn.get(event.getPlayer())){
+//                    break;
+//                }
+//            }
             event.getPlayer().teleport(odLoc);
             event.getPlayer().setGameMode(GameMode.SURVIVAL);
         }else{
@@ -98,6 +100,17 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"- 使用 /eap create 创建二步验证 -");
         }
     }
+
+//    public void get_verify(Player p){
+//        int taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+//            @Override
+//            public void run() {
+//                if(verify.get(p)){
+//                    Bukkit.getScheduler().cancelTask(taskid);
+//                }
+//            }
+//        },0L,20L);
+//    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -125,7 +138,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         }
                                         String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, getConfig().getString("Account.Display") , p.getName());
                                         try {
-                                            Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/"+uuid.toString()+".png", 300 ,300);
+                                            Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
                                         } catch (WriterException | IOException e) {
                                             e.printStackTrace();
                                             p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
@@ -136,11 +149,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
                                         verify.put(p,false);
                                         p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                        while(!verify.get(p)){
-                                            if (verify.get(p)){
-                                                break;
-                                            }
+                                        for(verify.get(p)){
+
                                         }
+//                                        while(!verify.get(p)){
+//                                            if (verify.get(p)){
+//                                                break;
+//                                            }
+//                                        }
                                         PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
                                         p.getInventory().clear();
                                         p.getInventory().addItem((ItemStack) oldInvs.get(p));
@@ -177,7 +193,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                         } else {
                             if (args[0].equalsIgnoreCase("safepoint")) {
                                 //输入eap safepoint，当玩家激活了2fa后，需要验证2fa的时候，自动传送到这个坐标，以免遭遇伤害
-                                Location safepoint = new Location(p.getWorld(),p.getLocation().getX(),p.getLocation().getY(),p.getLocation().getZ());
+                                Location safepoint = p.getLocation();
                                 UUID uuid = p.getUniqueId();
                                 try {
                                     if(getDatabase().SafePoint(uuid, safepoint)){

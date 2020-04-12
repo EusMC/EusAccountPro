@@ -9,6 +9,7 @@ import de.taimos.totp.TOTP;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,10 +42,18 @@ public class Authenticator {
             throw new IllegalStateException(e);
         }
     }
-    public static void createQRCode(String barCodeData, String filePath, int height, int width)
-            throws WriterException, IOException {
+
+    public static void createQRCode(String barCodeData, String filePath, String filename, int height, int width) throws WriterException, IOException {
+        File mkdir = new File(filePath);
+        if (!mkdir.exists()){
+            mkdir.mkdirs();
+        }
+        File file = new File(filePath+filename);
+        if (!file.exists()){
+            file.createNewFile();
+        }
         BitMatrix matrix = new MultiFormatWriter().encode(barCodeData, BarcodeFormat.QR_CODE, width, height);
-        try (FileOutputStream out = new FileOutputStream(filePath)) {
+        try (FileOutputStream out = new FileOutputStream(filePath+filename)) {
             MatrixToImageWriter.writeToStream(matrix, "png", out);
         }
     }

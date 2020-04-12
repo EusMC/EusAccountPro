@@ -24,7 +24,7 @@ public class onMapInitialize implements Listener {
         map.addRenderer(new MapRenderer() {
             @Override
             public void render(MapView view, MapCanvas canvas, Player player) {
-                canvas.drawImage(20,20,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
             }
         });
     }

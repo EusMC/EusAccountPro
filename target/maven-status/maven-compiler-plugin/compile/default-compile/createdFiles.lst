@@ -9,5 +9,6 @@ cn\elabosak\eusaccountpro\database\JsonDB.class
 cn\elabosak\eusaccountpro\handler\onMapInitialize$1.class
 cn\elabosak\eusaccountpro\database\MySQL.class
 cn\elabosak\eusaccountpro\database\SQLite.class
+cn\elabosak\eusaccountpro\utils\FileUtil.class
 cn\elabosak\eusaccountpro\controller\AuthController.class
 cn\elabosak\eusaccountpro\EAPConfig.class
