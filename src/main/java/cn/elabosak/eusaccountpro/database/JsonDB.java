@@ -2,9 +2,11 @@ package cn.elabosak.eusaccountpro.database;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import cn.elabosak.eusaccountpro.utils.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -13,6 +15,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import cn.elabosak.eusaccountpro.EusAccountPro;
 
+import javax.xml.bind.Marshaller;
+
 public class JsonDB extends Database {
 
     EusAccountPro plugin;
@@ -20,20 +24,12 @@ public class JsonDB extends Database {
     @Override
     public String getSecretKey(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json");
+        String Filepath = "plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json";
+        File file = new File(Filepath);
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            FileReader fileReader = new FileReader(file);
-            BufferedReader br = new BufferedReader(fileReader);
-            StringBuilder sb = new StringBuilder();
-            String temp = "";
-            while ((temp = br.readLine()) != null){
-                sb.append(temp + "\n");
-            }
-            br.close();
-            String js = sb.toString();
-//            String file_string = FileUtils.readFileToString(file, "UTF-8");
+            String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
             JSONArray secretKey_json = jsonObject.getJSONArray("secretKey");
             if (secretKey_json != null){
@@ -126,21 +122,12 @@ public class JsonDB extends Database {
     @Override
     public Location getSafePoint(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        File file = new File("plugins/EusAccountPro/JsonDB/safepoint/"+uuid_string+".json");
-        String str;
+        String Filepath = "plugins/EusAccountPro/JsonDB/safepoint/"+uuid_string+".json";
+        File file = new File(Filepath);
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            FileReader fileReader = new FileReader(file);
-            BufferedReader br = new BufferedReader(fileReader);
-            StringBuilder sb = new StringBuilder();
-            String temp = "";
-            while ((temp = br.readLine()) != null){
-                sb.append(temp + "\n");
-            }
-            br.close();
-            String js = sb.toString();
-//            String file_string = FileUtils.readFileToString(file, "UTF-8");
+            String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
             JSONArray safepoint_json = jsonObject.getJSONArray("safepoint");
             if (safepoint_json != null){
