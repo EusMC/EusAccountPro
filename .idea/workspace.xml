@@ -8,7 +8,11 @@
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +125,7 @@
       <workItem from="1586561805873" duration="7396000" />
       <workItem from="1586571410149" duration="15982000" />
       <workItem from="1586589141653" duration="1810000" />
-      <workItem from="1586657934703" duration="535000" />
+      <workItem from="1586657934703" duration="2194000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>
@@ -193,22 +197,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="156" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1586336872298" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1586588383052">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1586658550733">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586588383052" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1586588383051">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586658550733" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1586658550733">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586588383051" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1586588383051">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586658550733" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1586658550733">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586588383051" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1586588383051">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586658550733" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1586658550733">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586588383051" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586658550733" />
     <state x="598" y="96" key="Maven.ArtifactSearchDialog" timestamp="1586500239216">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

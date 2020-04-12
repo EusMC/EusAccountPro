@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.io.*;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import cn.elabosak.eusaccountpro.EusAccountPro;
@@ -24,8 +24,21 @@ public class JsonDB extends Database {
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            String file_string = FileUtils.readFileToString(file, "UTF-8");
-            JSONObject jsonObject = JSON.parseObject(file_string);
+            String str="";
+            try {
+                FileInputStream in=new FileInputStream(file);
+                // size 为字串的长度 ，这里一次性读完
+                int size=in.available();
+                byte[] buffer=new byte[size];
+                in.read(buffer);
+                in.close();
+                str=new String(buffer,"UTF-8");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                return null;
+            }
+//            String file_string = FileUtils.readFileToString(file, "UTF-8");
+            JSONObject jsonObject = JSON.parseObject(str);
             JSONArray secretKey_json = jsonObject.getJSONArray("secretKey");
             if (secretKey_json != null){
                String secretKey = secretKey_json.toString();
@@ -121,8 +134,21 @@ public class JsonDB extends Database {
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
-            String file_string = FileUtils.readFileToString(file, "UTF-8");
-            JSONObject jsonObject = JSON.parseObject(file_string);
+            String str="";
+            try {
+                FileInputStream in=new FileInputStream(file);
+                // size 为字串的长度 ，这里一次性读完
+                int size=in.available();
+                byte[] buffer=new byte[size];
+                in.read(buffer);
+                in.close();
+                str=new String(buffer,"UTF-8");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                return null;
+            }
+//            String file_string = FileUtils.readFileToString(file, "UTF-8");
+            JSONObject jsonObject = JSON.parseObject(str);
             JSONArray safepoint_json = jsonObject.getJSONArray("safepoint");
             if (safepoint_json != null){
                 String safepoint_string = safepoint_json.toString();

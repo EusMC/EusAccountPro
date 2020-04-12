@@ -17,23 +17,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.function.LongPredicate;
 
 import static cn.elabosak.eusaccountpro.utils.Authenticator.getTOTPCode;
 
@@ -119,9 +111,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                             if(args.length == 1){
                                 try {
                                     if(getDatabase().getSafePoint(uuid) != null){
-                                        p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
+                                        p.sendMessage(ChatColor.BLUE + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
                                         oldInvs.put(p, p.getInventory());
-                                        p.sendMessage(ChatColor.BOLD + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
+                                        p.sendMessage(ChatColor.BLUE + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
                                         p.getInventory().clear();
                                         String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
                                         try {
@@ -219,10 +211,12 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                     }
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
+                                                    return true;
                                                 }
                                             }
                                         }else{
                                             p.sendMessage(ChatColor.RED+"你不需要验证");
+                                            return true;
                                         }
                                     }else{
                                         sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
