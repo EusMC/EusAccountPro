@@ -7,12 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/handler/onPlayer2fa.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/handler/onPlayerCommandSend.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,6 +124,7 @@
       <workItem from="1586657934703" duration="5211000" />
       <workItem from="1586683272074" duration="7735000" />
       <workItem from="1586691966430" duration="5973000" />
+      <workItem from="1587176223390" duration="566000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>

@@ -17,19 +17,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandSendEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.UUID;
 
 import static cn.elabosak.eusaccountpro.utils.Authenticator.getTOTPCode;
@@ -87,7 +82,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
-            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"+ EusAccountPro 正在保护你的账户 +");
+            event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
             Location odLoc = event.getPlayer().getLocation();
             odloc.put(event.getPlayer(),odLoc);
             Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
@@ -97,8 +92,8 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             Listener listener = new onPlayer2fa();
             getServer().getPluginManager().registerEvents(listener,this);
         }else{
-            event.getPlayer().sendMessage(ChatColor.BLUE.BOLD+"- EusAccountPro 已推出 -");
-            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"- 使用 /eap create 创建二步验证 -");
+            event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
+            event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> 使用 /eap create 创建二步验证 -");
         }
     }
 
@@ -115,9 +110,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                             if(args.length == 1){
                                 try {
                                     if(getDatabase().getSafePoint(uuid) != null){
-                                        p.sendMessage(ChatColor.BLUE + "+ EAP -> " + ChatColor.BOLD + "正在创建二步验证QRCode...");
+                                        p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
                                         oldInvs.put(p, p.getInventory());
-                                        p.sendMessage(ChatColor.BLUE + "+ EAP -> " + ChatColor.BOLD + "物品栏已保存...");
+                                        p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
                                         p.getInventory().clear();
                                         String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
                                         try {
@@ -144,7 +139,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         getServer().getPluginManager().registerEvents(listener1,this); //监听玩家指令输入
                                         return true;
                                     }else{
-                                        p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN.BOLD+" /eap safepoint");
+                                        p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN+"§l /eap safepoint");
                                         return true;
                                     }
                                 } catch (IOException e) {
@@ -161,14 +156,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                             //输入eap delete，即判断后删除2fa
                             if(getDatabase().isPlayerRegistered(p.getUniqueId())){
                                 if (getDatabase().deletePlayer(p.getUniqueId())){
-                                    p.sendMessage(ChatColor.GREEN.BOLD + "删除成功");
+                                    p.sendMessage(ChatColor.GREEN + "§l删除成功");
                                     return true;
                                 }else{
-                                    p.sendMessage(ChatColor.RED + "删除失败");
+                                    p.sendMessage(ChatColor.RED + "§l删除失败");
                                     return true;
                                 }
                             }else{
-                                p.sendMessage(ChatColor.RED+"尚未注册");
+                                p.sendMessage(ChatColor.RED+"§l尚未注册");
                                 return true;
                             }
                         } else {
@@ -178,10 +173,10 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                 UUID uuid = p.getUniqueId();
                                 try {
                                     if(getDatabase().SafePoint(uuid, safepoint)){
-                                        p.sendMessage(ChatColor.GREEN.BOLD+"安全点已记录");
+                                        p.sendMessage(ChatColor.GREEN+"§l安全点已记录");
                                         return true;
                                     }else{
-                                        p.sendMessage(ChatColor.BOLD.RED+"安全点记录失败");
+                                        p.sendMessage(ChatColor.RED+"§l安全点记录失败");
                                         return true;
                                     }
                                 } catch (IOException e) {
@@ -195,20 +190,19 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                 p.sendMessage(ChatColor.RED+"请提供动态密码");
                                                 return true;
                                             }else{
-                                                Scanner scanner = new Scanner(args[1]);
-                                                String code = scanner.nextLine();
                                                 try {
-                                                    if (code.equals(getTOTPCode(getDatabase().getSecretKey(p.getUniqueId())))) {
-                                                        p.sendMessage(ChatColor.GREEN.BOLD+"初始化验证成功");
+                                                    if(authController.verify(p,args[1])){
                                                         verify.put(p,true);
+                                                        p.sendMessage(ChatColor.GREEN+"§l初始化验证成功");
                                                         return true;
-                                                    } else {
-                                                        p.sendMessage(ChatColor.RED.BOLD+"动态密码无效，验证失败");
+                                                    }else{
+                                                        p.sendMessage(ChatColor.RED+"§l动态密码无效，验证失败");
                                                         return true;
                                                     }
+                                                } catch (NotRegistered notRegistered) {
+                                                    notRegistered.printStackTrace();
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
-                                                    return true;
                                                 }
                                             }
                                         }else{
@@ -221,14 +215,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                     }
                                 } else {
                                     //指令错误，显示使用帮助
-                                    p.sendMessage(ChatColor.RED.BOLD+"+++++ EusAccountPro +++++");
+                                    p.sendMessage(ChatColor.RED+"§l+++++ EusAccountPro +++++");
                                     p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
                                     p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
                                     p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
                                     p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
                                     p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
                                     p.sendMessage(ChatColor.BLUE+"/eapre [玩家名] 强制删除二步验证 (需要管理员权限)");
-                                    p.sendMessage(ChatColor.RED.BOLD+"----- EusAccountPro -----");
+                                    p.sendMessage(ChatColor.RED+"§l----- EusAccountPro -----");
                                     return true;
                                 }
                             }
@@ -236,14 +230,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                     }
                 }else{
                     //仅输入eap，显示使用帮助
-                    p.sendMessage(ChatColor.RED.BOLD+"+++++ EusAccountPro +++++");
+                    p.sendMessage(ChatColor.RED+"§l+++++ EusAccountPro +++++");
                     p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
                     p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
                     p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
                     p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
                     p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
                     p.sendMessage(ChatColor.BLUE+"/eapre [玩家名] 强制删除二步验证 (需要管理员权限)");
-                    p.sendMessage(ChatColor.RED.BOLD+"----- EusAccountPro -----");
+                    p.sendMessage(ChatColor.RED+"§l----- EusAccountPro -----");
                     return true;
                 }
             } else {
@@ -257,7 +251,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                 Player p = (Player) sender;
                 if (args.length != 1) {
                     //什么都没有，显示使用方法
-                    sender.sendMessage(ChatColor.RED.BOLD+"数据异常，请输入 /2fa <code>");
+                    sender.sendMessage(ChatColor.RED+"§l数据异常，请输入 /2fa <code>");
                     return true;
                 } else {
                     //待加入：先行判断，1.该玩家是否已激活2fa 2.该玩家是否已经验证过2fa
@@ -290,28 +284,28 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             if (sender instanceof Player){
                 if (sender.hasPermission("EusAccountPro.admin")) {
                     if (args.length != 1) {
-                        sender.sendMessage(ChatColor.RED.BOLD+"目标缺失，请输入 /eapre [玩家名]");
+                        sender.sendMessage(ChatColor.RED+"§l目标缺失，请输入 /eapre [玩家名]");
                         return true;
                     } else {
                         Player target = Bukkit.getPlayer(args[0]); //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录
                         UUID uuid = target.getUniqueId();
                         if(getDatabase().isPlayerRegistered(uuid)){
                             if (getDatabase().deletePlayer(uuid)){
-                                sender.sendMessage(ChatColor.GREEN.BOLD+"删除成功");
+                                sender.sendMessage(ChatColor.GREEN+"§l删除成功");
                             }else{
-                                sender.sendMessage(ChatColor.GREEN.BOLD+"删除失败");
+                                sender.sendMessage(ChatColor.GREEN+"§l删除失败");
                             }
                         }else{
-                            sender.sendMessage(ChatColor.RED.BOLD + "该玩家尚未注册");
+                            sender.sendMessage(ChatColor.RED + "§l该玩家尚未注册");
                             return true;
                         }
 
                     }
                 } else {
-                    sender.sendMessage(ChatColor.BOLD + "你没有使用此命令的权限");
+                    sender.sendMessage(ChatColor.RED + "§l你没有使用此命令的权限");
                 }
             }else{
-                sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
+                sender.sendMessage(ChatColor.RED + "§l你必须作为一个玩家执行此命令");
                 return true;
             }
         }
