@@ -16,7 +16,7 @@
 
 ## 安装
 
-前往 `SpigotMC` 或 [`Github Releases`](https://github.com/EusMC/EusAccountPro/releases) 下载**服务端对应**版本
+前往 `SpigotMC` 或 [`Github Releases`](https://github.com/EusMC/EusAccountPro/releases) 下载**服务端对应**版本，将其放入`/plugins`文件夹
 
 ## 命令
 
@@ -53,7 +53,7 @@
 
 [![桉树叶](https://www.eumc.cc/images/logo_text_black.png)](https://www.eumc.cc)
 
-**设计&编程** `ElaBosak233`
+**设计 & 编程** `ElaBosak233`
 
 **框架优化** `leavessoft`
 
