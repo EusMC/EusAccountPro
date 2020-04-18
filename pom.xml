@@ -11,7 +11,7 @@
 
     <name>EusAccountPro</name>
 
-    <description>Use 2-factor verification to protect your account on the Bukkit/Spigot server</description>
+    <description>Use 2-factor verification to protect your account on the Bukkit / Spigot server</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -77,11 +77,11 @@
             <version>1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-codec</groupId>-->
+<!--            <artifactId>commons-codec</artifactId>-->
+<!--            <version>1.10</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.google.zxing</groupId>

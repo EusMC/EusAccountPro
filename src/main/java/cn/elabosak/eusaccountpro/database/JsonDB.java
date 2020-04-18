@@ -29,11 +29,7 @@ public class JsonDB extends Database {
             String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
             String secretKey_json = jsonObject.getString("secretKey");
-            if (secretKey_json != null){
-                return secretKey_json;
-            }else{
-                return null;
-            }
+            return secretKey_json;
         }
     }
 
@@ -67,11 +63,7 @@ public class JsonDB extends Database {
     public boolean isPlayerRegistered(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json");
-        if(!file.exists()){
-            return false; //文件不存在，返回false
-        }else{
-            return true;
-        }
+        return file.exists(); //文件不存在，返回false
     }
 
     @Override
@@ -82,11 +74,7 @@ public class JsonDB extends Database {
         if(!file.exists() && !QRCode.exists()){
             return false; //文件不存在，返回false
         }else{
-            if(file.delete() && QRCode.delete()){
-             return true;
-            }else{
-                return false;
-            }
+            return file.delete() && QRCode.delete();
         }
     }
 

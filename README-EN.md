@@ -40,10 +40,10 @@ Go to `SpigotMC` or [`Github Releases`](https://github.com/EusMC/EusAccountPro/r
 
 ## Database
 
-- `JsonDB` uses Json files for player data storage **(selected by default, file format mainstream, cross-platform, read and write quickly with the help of `FastJson`)**
-- `ymlDB` uses yml files for player data storage **(coming soon)**
-- `MySQL` uses MySQL database for player data storage **(coming soon)**
-- `SQLite` uses SQLite database for player data storage **(coming soon)**
+-`JsonDB` uses Json files for player data storage **(selected by default, file format mainstream, cross-platform, read and write quickly with the help of `FastJson`)**
+-`ymlDB` uses yml files for player data storage **(coming soon)**
+-`MySQL` uses MySQL database for player data storage **(coming soon)**
+-`SQLite` uses SQLite database for player data storage **(coming soon)**
 
 ## Open-Source
 
