@@ -37,6 +37,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     public HashMap<Player, Location> odloc = new HashMap<>();
     public HashMap<Player, GameMode> odgmode = new HashMap<>();
     public HashMap<Player, Boolean> isCreating = new HashMap<>();
+    public HashMap<Player, Boolean> verifyHigh = new HashMap<>();
 
     AuthController authController;
     Database database;
@@ -44,7 +45,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "+++ EusAccountPro Online √ +++");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "+++ EusAccountPro Online √ +++");
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             saveDefaultConfig();
@@ -75,29 +76,30 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "--- EusAccountPro Offline × ---");
+        getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "--- EusAccountPro Offline × ---");
     }
 
-    // TODO 这里要写一个监听器，监听玩家在线、离线
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
+        isCreating.put(event.getPlayer(),false);
+        verifyHigh.put(event.getPlayer(),false);
+        getServer().getConsoleSender().sendMessage("调试信息：isCreating已设置默认值给"+event.getPlayer().getName());
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
-            loggedIn.put(event.getPlayer(),false);
-            isCreating.put(event.getPlayer(),false);
             event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
             Location odLoc = event.getPlayer().getLocation();
             odloc.put(event.getPlayer(),odLoc);
-            Location loc = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
+            Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
             odgmode.put(event.getPlayer(),event.getPlayer().getGameMode());
             event.getPlayer().setGameMode(GameMode.ADVENTURE);
-            event.getPlayer().teleport(loc);
+            event.getPlayer().teleport(safePoint);
             oldInvs.put(event.getPlayer(),event.getPlayer().getInventory().getContents());
             event.getPlayer().getInventory().clear();
             event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
         }else{
             event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
             event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> 使用 /eap create 创建二步验证 -");
+            verifyHigh.put(event.getPlayer(),false);
         }
     }
 
@@ -114,12 +116,17 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                             if(args.length == 1){
                                 try {
                                     if(getDatabase().getSafePoint(uuid) != null){
+                                        getServer().getConsoleSender().sendMessage("调试信息：create命令已经接收");
                                         if(isCreating.get(p)){
+                                            getServer().getConsoleSender().sendMessage("调试信息：已判断“正在创建”状态");
                                             p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
+                                            return true;
                                         }else{
                                             isCreating.put(p,true);
+                                            getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
                                             p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
                                             oldInvs.put(p, p.getInventory().getContents());
+                                            getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
                                             p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
                                             p.getInventory().clear();
                                             String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
@@ -130,7 +137,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                 p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
                                                 return true;
                                             }
-                                            String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(secretKey, p.getName() , getConfig().getString("Account.Display"));
+                                            String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(getDatabase().getSecretKey(uuid), p.getName() , getConfig().getString("Account.Display"));
                                             try {
                                                 Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
                                             } catch (WriterException | IOException e) {
@@ -219,8 +226,12 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                     verify.put(p,true);
                                                     p.sendMessage(ChatColor.GREEN+"§l初始化验证成功");
                                                     p.getInventory().setContents(oldInvs.get(p));
+                                                    isCreating.put(p,false);
+                                                    verifyHigh.put(p,true);
+                                                    loggedIn.put(p,true);
                                                     return true;
                                                 }else{
+                                                    p.sendMessage(ChatColor.GOLD+"§l当前密钥为 "+authController.getSecretKey(p));
                                                     p.sendMessage(ChatColor.RED+"§l动态密码无效，验证失败");
                                                     return true;
                                                 }
@@ -274,27 +285,38 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                     return true;
                 } else {
                     //待加入：先行判断，1.该玩家是否已激活2fa 2.该玩家是否已经验证过2fa
-                    if (loggedIn.getOrDefault(p, false)) {
-                        p.sendMessage(ChatColor.AQUA + "您已认证");
+                    if(verifyHigh.get(p)){
+                        p.sendMessage(ChatColor.GOLD+"§l您已完毕初始化验证，不需要使用 /2fa");
                         return true;
-                    }
-                    try {
-                        if (authController.verify(p, args[0])) {
-                            // Success
-                            loggedIn.put(p, true);
-                            p.sendMessage(ChatColor.GREEN + "认证成功");
-                            p.getInventory().setContents(oldInvs.get(p));
-                            p.setGameMode(odgmode.get(p));
-                            p.teleport(odloc.get(p));
+                    }else{
+                        if (loggedIn.getOrDefault(p, false)) {
+                            p.sendMessage(ChatColor.AQUA + "§l您已认证");
                             return true;
-                        } else {
-                            // Invalid code
-                            p.sendMessage(ChatColor.YELLOW + "认证失败");
-                            return true;
+                        }else{
+                            if (isCreating.get(p)){
+                                p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
+                                return true;
+                            }else{
+                                try {
+                                    if (authController.verify(p, args[0])) {
+                                        // Success
+                                        loggedIn.put(p, true);
+                                        p.sendMessage(ChatColor.GREEN + "认证成功");
+                                        p.getInventory().setContents(oldInvs.get(p));
+                                        p.setGameMode(odgmode.get(p));
+                                        p.teleport(odloc.get(p));
+                                        return true;
+                                    } else {
+                                        // Invalid code
+                                        p.sendMessage(ChatColor.YELLOW + "认证失败");
+                                        return true;
+                                    }
+                                } catch (NotRegistered | IOException e) {
+                                    p.sendMessage(ChatColor.RED + "尚未注册或程序异常");
+                                    return true;
+                                }
+                            }
                         }
-                    } catch (NotRegistered | IOException e) {
-                        p.sendMessage(ChatColor.RED + "尚未注册或程序异常");
-                        return true;
                     }
                 }
             } else {
@@ -306,7 +328,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             if (sender instanceof Player){
                 if (sender.hasPermission("EusAccountPro.admin")) {
                     if (args.length != 1) {
-                        sender.sendMessage(ChatColor.RED+"§l目标缺失，请输入 /eapre [玩家名]");
+                        sender.sendMessage(ChatColor.RED+"§l目标缺失，请输入 /eapre <玩家名>");
                         return true;
                     } else {
                         Player target = Bukkit.getPlayer(args[0]); //定义此为该玩家的名称，接下来验证是否已激活2fa，若为是，则删除其记录

@@ -78,11 +78,15 @@ public class JsonDB extends Database {
     public boolean deletePlayer(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json");
-        if(!file.exists()){
+        File QRCode = new File("plugins/EusAccountPro/QRCode/"+uuid_string+".png");
+        if(!file.exists() && !QRCode.exists()){
             return false; //文件不存在，返回false
         }else{
-            file.delete();
-            return true;
+            if(file.delete() && QRCode.delete()){
+             return true;
+            }else{
+                return false;
+            }
         }
     }
 
