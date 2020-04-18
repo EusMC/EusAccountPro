@@ -10,17 +10,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/EusAccountPro_jar/EusAccountPro.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/database/JsonDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/EusAccountPro-20w15a.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/utils/Authenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/utils/Authenticator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/EusAccountPro.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/database/JsonDB.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/cn/elabosak/eusaccountpro/database/JsonDB.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +133,7 @@
       <workItem from="1587178809864" duration="16648000" />
       <workItem from="1587196933092" duration="1748000" />
       <workItem from="1587198986655" duration="3471000" />
-      <workItem from="1587203151236" duration="1677000" />
+      <workItem from="1587203151236" duration="5608000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>

@@ -17,12 +17,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapRenderer;
-import org.bukkit.map.MapView;
+import org.bukkit.map.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -137,8 +138,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                 p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
                                                 return true;
                                             }
-                                            String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(getDatabase().getSecretKey(uuid), p.getName() , getConfig().getString("Account.Display"));
                                             try {
+//                                                p.sendMessage(ChatColor.GOLD+"§l密钥已生成 "+authController.getSecretKey(p));
+                                                String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(authController.getSecretKey(p), p.getName() , getConfig().getString("Account.Display"));
                                                 Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
                                             } catch (WriterException | IOException e) {
                                                 e.printStackTrace();
@@ -152,7 +154,16 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             view.addRenderer(new MapRenderer() {
                                                 @Override
                                                 public void render(MapView map, MapCanvas canvas, Player player) {
-                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                                                    BufferedImage img;
+                                                    try{
+                                                        img = ImageIO.read(new File("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png"));
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        return;
+                                                    }
+                                                    map.setScale(MapView.Scale.NORMAL);
+//                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                                                    canvas.drawImage(0,0,img);
                                                 }
                                             });
                                             MapMeta mapMeta = ((MapMeta)map.getItemMeta());
@@ -162,7 +173,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.getInventory().setHeldItemSlot(4);
                                             verify.put(p,false);
                                             p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                            p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+getDatabase().getSecretKey(uuid));
+                                            p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
                                             return true;
                                         }
                                     }else{
@@ -181,21 +192,26 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                     } else {
                         if (args[0].equalsIgnoreCase("delete")) {
                             //输入eap delete，即判断后删除2fa
-                            if(!loggedIn.get(p)){
-                                p.sendMessage(ChatColor.RED+"§l请先认证");
+                            if(isCreating.get(p)){
+                                p.sendMessage(ChatColor.RED+"你正在创建EAP");
                                 return true;
                             }else{
-                                if(getDatabase().isPlayerRegistered(p.getUniqueId())){
-                                    if (getDatabase().deletePlayer(p.getUniqueId())){
-                                        p.sendMessage(ChatColor.GREEN + "§l删除成功");
-                                        return true;
+                                if(!loggedIn.get(p)){
+                                    p.sendMessage(ChatColor.RED+"§l请先认证");
+                                    return true;
+                                }else{
+                                    if(getDatabase().isPlayerRegistered(p.getUniqueId())){
+                                        if (getDatabase().deletePlayer(p.getUniqueId())){
+                                            p.sendMessage(ChatColor.GREEN + "§l删除成功");
+                                            return true;
+                                        }else{
+                                            p.sendMessage(ChatColor.RED + "§l删除失败");
+                                            return true;
+                                        }
                                     }else{
-                                        p.sendMessage(ChatColor.RED + "§l删除失败");
+                                        p.sendMessage(ChatColor.RED+"§l尚未注册");
                                         return true;
                                     }
-                                }else{
-                                    p.sendMessage(ChatColor.RED+"§l尚未注册");
-                                    return true;
                                 }
                             }
                         } else {
@@ -335,6 +351,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                         UUID uuid = target.getUniqueId();
                         if(getDatabase().isPlayerRegistered(uuid)){
                             if (getDatabase().deletePlayer(uuid)){
+                                isCreating.put(target,false);
+                                verifyHigh.put(target,false);
+                                verify.put(target,true);
                                 sender.sendMessage(ChatColor.GREEN+"§l删除成功");
                                 return true;
                             }else{

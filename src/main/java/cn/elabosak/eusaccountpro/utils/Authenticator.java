@@ -55,6 +55,11 @@ public class Authenticator {
         BitMatrix matrix = new MultiFormatWriter().encode(barCodeData, BarcodeFormat.QR_CODE, width, height);
         try (FileOutputStream out = new FileOutputStream(filePath+filename)) {
             MatrixToImageWriter.writeToStream(matrix, "png", out);
+            try{
+                out.close();
+            }catch (Exception e){
+                return;
+            }
         }
     }
 }
