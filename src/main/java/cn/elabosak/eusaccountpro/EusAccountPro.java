@@ -184,33 +184,26 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                 }
                             } else {
                                 if (args[0].equalsIgnoreCase("verify")){
-                                    if (sender instanceof Player) {
-                                        if(!verify.get(p)){
-                                            if(args.length != 2){
-                                                p.sendMessage(ChatColor.RED+"请提供动态密码");
-                                                return true;
-                                            }else{
-                                                try {
-                                                    if(authController.verify(p,args[1])){
-                                                        verify.put(p,true);
-                                                        p.sendMessage(ChatColor.GREEN+"§l初始化验证成功");
-                                                        return true;
-                                                    }else{
-                                                        p.sendMessage(ChatColor.RED+"§l动态密码无效，验证失败");
-                                                        return true;
-                                                    }
-                                                } catch (NotRegistered notRegistered) {
-                                                    notRegistered.printStackTrace();
-                                                } catch (IOException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }else{
-                                            p.sendMessage(ChatColor.RED+"你不需要验证");
+                                    if(!verify.get(p)){
+                                        if(args.length != 2){
+                                            p.sendMessage(ChatColor.RED+"请提供动态密码");
                                             return true;
+                                        }else{
+                                            try {
+                                                if(authController.verify(p,args[1])){
+                                                    verify.put(p,true);
+                                                    p.sendMessage(ChatColor.GREEN+"§l初始化验证成功");
+                                                    return true;
+                                                }else{
+                                                    p.sendMessage(ChatColor.RED+"§l动态密码无效，验证失败");
+                                                    return true;
+                                                }
+                                            } catch (NotRegistered | IOException notRegistered) {
+                                                notRegistered.printStackTrace();
+                                            }
                                         }
                                     }else{
-                                        sender.sendMessage(ChatColor.BOLD + "你必须作为一个玩家执行此命令");
+                                        p.sendMessage(ChatColor.RED+"你不需要验证");
                                         return true;
                                     }
                                 } else {

@@ -13,13 +13,13 @@ public class onPlayerCommandSend implements Listener {
     EusAccountPro eusAccountPro;
 
     @EventHandler
-    public void onPlayerCommandSend(PlayerCommandSendEvent event){
+    public void onPlayerCommandSend (PlayerCommandSendEvent event){
         if(eusAccountPro.verify.get(event.getPlayer())){
             Listener listener = new onMapInitialize();
             PlayerInteractEvent.getHandlerList().unregister(listener); //onMap监听器关闭
             event.getPlayer().getInventory().clear();
             event.getPlayer().getInventory().addItem((ItemStack) eusAccountPro.oldInvs.get(event.getPlayer()));
-            event.getPlayer().sendMessage(ChatColor.GREEN.BOLD+"创建成功");
+            event.getPlayer().sendMessage(ChatColor.GREEN+"§l创建成功");
             Listener self = new onPlayerCommandSend();
             PlayerInteractEvent.getHandlerList().unregister(self);
         }
