@@ -53,11 +53,11 @@
 
 [![桉树叶](https://www.eumc.cc/images/logo_text_black.png)](https://www.eumc.cc)
 
-**设计&编程:** `ElaBosak233`
+**设计&编程** `ElaBosak233`
 
-**框架优化:** `leavessoft`
+**框架优化** `leavessoft`
 
-**内测参与名单(排名不分先后):**
+**内测参与名单(排名不分先后)**
 
 - `leavessoft`
 - `tianyi_xiaoyi`

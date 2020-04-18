@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
@@ -126,7 +125,7 @@
       <workItem from="1586683272074" duration="7735000" />
       <workItem from="1586691966430" duration="5973000" />
       <workItem from="1587176223390" duration="2198000" />
-      <workItem from="1587178809864" duration="14696000" />
+      <workItem from="1587178809864" duration="15134000" />
     </task>
     <task id="LOCAL-00001" summary="Code clean up">
       <created>1586416337937</created>
