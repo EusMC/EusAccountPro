@@ -17,7 +17,7 @@ commands:
     permission: EusAccountPro.common
   eapre:
     description: 删除其他玩家的2fa
-    usage: /eapre [玩家名]
+    usage: /eapre <玩家名>
     permission: EusAccountPro.admin
 
 permissions:
