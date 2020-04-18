@@ -20,8 +20,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -130,11 +134,24 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
                                             return true;
                                         }
-                                        p.getInventory().addItem(new ItemStack(Material.MAP));
-                                        Listener listener = new onMapInitialize();
-                                        getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
+                                        ItemStack map = new ItemStack(Material.MAP, 1);
+                                        MapView view = Bukkit.createMap(p.getWorld());
+                                        for(MapRenderer renderer : view.getRenderers())
+                                            view.removeRenderer(renderer);
+                                        view.addRenderer(new MapRenderer() {
+                                            @Override
+                                            public void render(MapView map, MapCanvas canvas, Player player) {
+                                                canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                                            }
+                                        });
+                                        map.setDurability((short) view.getId());
+                                        p.getInventory().addItem(map);
+//                                        p.getInventory().addItem(new ItemStack(Material.MAP));
+//                                        Listener listener = new onMapInitialize();
+//                                        getServer().getPluginManager().registerEvents(listener,this); //onMap监听器开启
                                         verify.put(p,false);
                                         p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                                        p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+getDatabase().getSecretKey(uuid));
                                         Listener listener1 = new onPlayerCommandSend();
                                         getServer().getPluginManager().registerEvents(listener1,this); //监听玩家指令输入
                                         return true;
