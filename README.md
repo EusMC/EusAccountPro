@@ -1,6 +1,6 @@
 # EusAccountPro
 
-> **English** Support
+> **English** Ver.
 
 ## Introduction
 
