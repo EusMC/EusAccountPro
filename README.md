@@ -2,7 +2,7 @@
 
 [**`简体中文`**](README.md) **/** [**`English`**](README-EN.md)
 
-> [**English** Ver.](https://github.com/EusMC/EusAccountPro/tree/english)
+> **EXTRA BRANCH** [**English** Ver.](https://github.com/EusMC/EusAccountPro/tree/english)
 
 ## 简介
 
