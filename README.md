@@ -2,7 +2,7 @@
 
 [**`简体中文`**](README.md) **/** [**`English`**](README-EN.md)
 
-> [**English** Support](https://github.com/EusMC/EusAccountPro/tree/english)
+> [**English** Ver.](https://github.com/EusMC/EusAccountPro/tree/english)
 
 ## 简介
 
@@ -13,7 +13,7 @@
 ## 语言支持
 
 - 简体中文 √
-- English 开发中...
+- English √
 
 ## 功能
 
