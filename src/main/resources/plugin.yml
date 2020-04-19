@@ -8,22 +8,22 @@ website: https://github.com/ElaBosak233/EusAccountPro
 
 commands:
   eap:
-    description: EusAccountPro的主命令
-    usage: /eap [子命令]
+    description: EusAccountPro's main command
+    usage: /eap <sub>
     permission: EusAccountPro.common
   2fa:
-    description: 验证2fa
+    description: Verify 2FA
     usage: /2fa <Code>
     permission: EusAccountPro.common
   eapre:
-    description: 删除其他玩家的2fa
-    usage: /eapre <玩家名>
+    description: Forcibly delete any player's 2FA
+    usage: /eapre <PlayerName>
     permission: EusAccountPro.admin
 
 permissions:
   EusAccountPro.admin:
-    description: 可以控制其他玩家的2fa激活情况
+    description: EusAccountPro administrator rights
     default: op
   EusAccountPro.common:
-    description: EusAccountPro的普通权限
+    description: EusAccountPro general permissions (granted by default)
     default: true

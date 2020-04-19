@@ -114,10 +114,7 @@ public class JsonDB extends Database {
         }else{
             String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
-            Bukkit.getServer().getConsoleSender().sendMessage("调试信息：文件已转换");
             String safepoint_json = jsonObject.getString("safepoint");
-            Bukkit.getServer().getConsoleSender().sendMessage("调试信息：安全点已获取");
-            Bukkit.getServer().getConsoleSender().sendMessage("调试信息：安全点位置于 "+safepoint_json);
             if (safepoint_json != null){
                 return str2loc.str2loc(safepoint_json);
 

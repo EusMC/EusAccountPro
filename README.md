@@ -11,7 +11,7 @@ When using the Bukkit / Spigot server, the player's account may be hacked (genui
 ## Language
 
 - 简体中文 √
-- English Dev...
+- English √
 
 ## Features
 
