@@ -6,6 +6,8 @@
 
 When using the Bukkit / Spigot server, the player's account may be hacked (genuine players are no exception). For this reason, we tried to find a solution, and finally found [**`MineSecure`**](https://www.spigotmc.org/resources/minesecure.699/) in SpigotMC. You can use the **Two Factor Authentication** developed by Google so that player's account will be protected, the plug-in itself is perfect, but the price is high, so we try to make a plug-in similar to **`MineSecure`**, and it is free and open source, as a plug-in used by server managers, and materials studied by plug-in authors
 
+![YBI@F_NJA~W__F@WJB`N~X3.jpg](https://i.loli.net/2020/04/19/T3EVFY8AwDfLdek.jpg)
+
 ## Language
 
 - 简体中文 √
