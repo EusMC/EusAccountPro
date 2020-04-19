@@ -1,81 +1,80 @@
 # EusAccountPro
 
-[**`简体中文`**](README.md) **/** [**`English`**](README-EN.md)
+> **English** Support
 
-## 简介
+## Introduction
 
-使用 Bukkit / Spigot 服务端时，可能玩家的账户会被黑客破解 (正版玩家也不例外) ，为此，我们尝试去寻找解决方法，最终在 SpigotMC 发现了 [**`MineSecure`**](https://www.spigotmc.org/resources/minesecure.699/) ，可以使用 Google 开发的**二步验证** (Two Factor Authentication) 对玩家的账户进行保护 ，插件本身完美，但是定价高昂，所以我们尝试自制类似于 **`MineSecure`** 的插件，并且**免费开源**，作为服务器管理者使用的插件、插件编写者借鉴的资料
+When using the Bukkit / Spigot server, the player's account may be hacked (genuine players are no exception). For this reason, we tried to find a solution, and finally found [**`MineSecure`**](https://www.spigotmc.org/resources/minesecure.699/) in SpigotMC. You can use the **Two Factor Authentication** developed by Google so that player's account will be protected, the plug-in itself is perfect, but the price is high, so we try to make a plug-in similar to **`MineSecure`**, and it is free and open source, as a plug-in used by server managers, and materials studied by plug-in authors
 
 ![YBI@F_NJA~W__F@WJB`N~X3.jpg](https://i.loli.net/2020/04/19/T3EVFY8AwDfLdek.jpg)
 
-## 语言支持
+## Language
 
 - 简体中文 √
-- English 开发中...
+- English Dev...
 
-## 功能
+## Features
 
-- 使用 Google 二步验证保护玩家的账户
-- 管理员可直接强制性控制玩家二步验证激活状态
-- 可使用多种数据库 (JsonDB / ymlDB / MySQL / SQLite) 进行二步验证数据管理 **(MySQL / SQLite / ymlDB 正在开发)**
-- 可使用 `Google Authenticator` 或 `Authy` 等同类 APP 绑定二步验证
-- [`config.yml`](/src/main/resources/config.yml) 可自定义
+- Two Factor Authentication developed by Google
+- The administrator can directly control the player's Two Factor Authentication status
+- Multiple databases (JsonDB / ymlDB / MySQL / SQLite) can be used for two-step verification data management **(MySQL / SQLite / ymlDB is under development)**
+- You can use the similar apps such as `Google Authenticator` or` Authy` to bind two-step verification
+- [`config.yml`](/src/main/resources/config.yml) can be customized
 
-## 安装
+## Installation
 
-前往 `SpigotMC` 或 [`Github Releases`](https://github.com/EusMC/EusAccountPro/releases) 下载**服务端对应**版本，将其放入`/plugins`文件夹
+Go to `SpigotMC` or [`Github Releases`](https://github.com/EusMC/EusAccountPro/releases) to download the **server corresponding** version, and put it in the `/plugins` folder
 
-## 命令
+## Commands
 
 ### eap
-- `/eap safepoint` 记录玩家安全点
-- `/eap create` 创建二步验证
-- `/eap delete` 删除自己的二步验证
-- `/eap verify <code>` 初始化验证
+- `/eap safepoint` Record player safety points
+- `/eap create` Create 2FA
+- `/eap delete` Delete your 2FA
+- `/eap verify <code>` Initial verification
 
 ### 2fa
-- `/2fa <code>` 进服二步验证
+- `/2fa <code>` Verify when you're entering the server
 
 ### eapre
-> 需要管理员权限
-- `/eapre <玩家名>` 强制删除任意玩家二步验证
+> OP Only
+- `/eapre <PlayerName>` Forcibly delete any player's 2FA
 
-## 权限
+## Permissions
 
-- `EusAccountPro.common` EusAccountPro的普通权限 (默认情况下已授予)
-- `EusAccountPro.admin` EusAccountPro的管理员权限，可以强制删除任意玩家二步验证
+- `EusAccountPro.common` EusAccountPro general permissions (granted by default)
+- `EusAccountPro.admin` EusAccountPro administrator rights
 
 ## config.yml
-
 ```yaml
 Storage:
   type: JSON # JSON, SQLite, MySQL, ymlDB
 Account:
-  Display: EusMC # 包含在二维码内服务器的名称，可自定义，使用APP扫描后会显示该名称
+  Display: EusMC # The name of the server included in the QRCode can be customized, and the name will be displayed after scanning with the APP
 ```
 
-## 数据库
+## Database
 
-- `JsonDB` 使用 Json 文件进行玩家数据存储 **(默认选择，文件格式主流，跨平台，在 `FastJson` 的辅助下读写快速)**
-- `ymlDB` 使用 yml 文件进行玩家数据存储 **(敬请期待)**
-- `MySQL` 使用 MySQL 数据库进行玩家数据存储 **(敬请期待)**
-- `SQLite` 使用 SQLite 数据库进行玩家数据存储 **(敬请期待)**
+-`JsonDB` uses Json files for player data storage **(selected by default, file format mainstream, cross-platform, read and write quickly with the help of `FastJson`)**
+-`ymlDB` uses yml files for player data storage **(coming soon)**
+-`MySQL` uses MySQL database for player data storage **(coming soon)**
+-`SQLite` uses SQLite database for player data storage **(coming soon)**
 
-## 开源说明
+## Open-Source
 
-> 本项目**唯一**开源地址: [https://github.com/EusMC/EusAccountPro](https://github.com/EusMC/EusAccountPro)
+> The **only** open source address of this project: [https://github.com/EusMC/EusAccountPro](https://github.com/EusMC/EusAccountPro)
 
-使用 **`Apache License 2.0`** 进行开源，其中，若二次创作中仍然使用了 `FastJson` 解析器，请按照 `FastJson` [官方开源项目](https://github.com/alibaba/fastjson) 的要求进行处理
+Use **`Apache License 2.0`** for open source, if you still use `FastJson` parser in the second creation, please follow `FastJson`'s [Official Open Source Project](https://github.com/alibaba/fastjson) request processing
 
-## 开发团队
+## Development Team
 
 [![桉树叶](https://www.eumc.cc/images/logo_text_black.png)](https://www.eumc.cc)
 
-**设计 & 编程** `ElaBosak233`
+**Design & Programming** `ElaBosak233`
 
-**框架优化** `leavessoft`
+**Framework Optimization** `leavessoft`
 
-**内测参与名单(排名不分先后)**
+**List of internal test participants (names not listed in order)**
 
 - `leavessoft`
 - `tianyi_xiaoyi`
