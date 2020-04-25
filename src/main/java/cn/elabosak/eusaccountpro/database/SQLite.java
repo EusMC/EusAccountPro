@@ -1,6 +1,7 @@
 package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -35,6 +36,21 @@ public class SQLite extends Database {
     @Override
     public Location getSafePoint(UUID uuid) {
         return null;
+    }
+
+    @Override
+    public boolean updateInv(UUID uuid, ItemStack[] itemStacks) throws IOException {
+        return false;
+    }
+
+    @Override
+    public ItemStack[] getInv(UUID uuid) throws IOException {
+        return null;
+    }
+
+    @Override
+    public boolean deleteInv(UUID uuid) throws IOException {
+        return false;
     }
 
 }
