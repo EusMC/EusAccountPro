@@ -1,6 +1,7 @@
 package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
@@ -38,12 +39,17 @@ public class ymlDB extends Database{
     }
 
     @Override
-    public boolean updateInv(UUID uuid, ItemStack[] itemStacks) throws IOException {
+    public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
         return false;
     }
 
     @Override
-    public ItemStack[] getInv(UUID uuid) throws IOException {
+    public Inventory getInv(UUID uuid) throws IOException {
         return null;
+    }
+
+    @Override
+    public boolean deleteInv(UUID uuid) throws IOException {
+        return false;
     }
 }
