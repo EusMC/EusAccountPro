@@ -202,4 +202,50 @@ public class JsonDB extends Database {
         }
     }
 
+    @Override
+    public boolean updateGeoIP(UUID uuid, com.maxmind.geoip2.record.Location location) throws IOException {
+        String uuid_string = uuid.toString();
+        String mkdirs = "plugins/EusAccountPro/JsonDB/GeoIP/";
+        File mkdir = new File(mkdirs);
+        if (!mkdir.exists()){
+            mkdir.mkdirs();
+            return true;
+        }
+        String format = ".json";
+        String file_name = uuid_string + format;
+        File file = new File("plugins/EusAccountPro/JsonDB/GeoIP//"+ file_name);
+        Map<String, com.maxmind.geoip2.record.Location> GeoIP = new HashMap<String, com.maxmind.geoip2.record.Location>();
+        GeoIP.put("GeoIP",location);
+        if(!file.exists()){
+            file.createNewFile();
+        }
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            JSONObject.writeJSONString(fileOutputStream,GeoIP);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String getGeoIP(UUID uuid) {
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
+        String Filepath = "plugins/EusAccountPro/JsonDB/GeoIP/"+uuid_string+".json";
+        File file = new File(Filepath);
+        if(!file.exists()){
+            return null; //文件不存在，返回null
+        }else{
+            String js = FileUtil.ReadFile(Filepath);
+            JSONObject jsonObject = JSON.parseObject(js);
+            String geoIP_json = jsonObject.getString("GeoIP");
+            if (geoIP_json != null){
+                return geoIP_json;
+            }else{
+                return null;
+            }
+        }
+    }
+
 }

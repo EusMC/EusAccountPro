@@ -2,7 +2,6 @@ package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -52,6 +51,16 @@ public class MySQL extends Database {
     @Override
     public boolean deleteInv(UUID uuid) throws IOException {
         return false;
+    }
+
+    @Override
+    public boolean updateGeoIP(UUID uuid, com.maxmind.geoip2.record.Location location) {
+        return false;
+    }
+
+    @Override
+    public String getGeoIP(UUID uuid) {
+        return null;
     }
 
 
