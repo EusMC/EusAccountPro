@@ -2,8 +2,6 @@
 
 [**`简体中文`**](README.md) **/** [**`English`**](README-EN.md)
 
-> **EXTRA BRANCH** [**English** Ver.](https://github.com/EusMC/EusAccountPro/tree/english)
-
 ## 简介
 
 使用 Bukkit / Spigot 服务端时，可能玩家的账户会被黑客破解 (正版玩家也不例外) ，为此，我们尝试去寻找解决方法，最终在 SpigotMC 发现了 [**`MineSecure`**](https://www.spigotmc.org/resources/minesecure.699/) ，可以使用 Google 开发的**二步验证** (Two Factor Authentication) 对玩家的账户进行保护 ，插件本身完美，但是定价高昂，所以我们尝试自制类似于 **`MineSecure`** 的插件，并且**免费开源**，作为服务器管理者使用的插件、插件编写者借鉴的资料
@@ -13,7 +11,7 @@
 ## 语言支持
 
 - 简体中文 √
-- English √
+- English 开发中...
 
 ## 功能
 
