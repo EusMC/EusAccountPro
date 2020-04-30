@@ -362,13 +362,11 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             } catch (NotRegistered | IOException notRegistered) {
                                                 notRegistered.printStackTrace();
                                             }
->>>>>>> parent of e751e49... eap exit and inv json done
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
                                 } else {
-<<<<<<< HEAD
                                     if (args[0].equalsIgnoreCase("verify")){
                                         if(!verify.get(p)){
                                             if(args.length != 2){
@@ -432,7 +430,6 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             return true;
                                         }
                                     }
-=======
                                     //指令错误，显示使用帮助
                                     p.sendMessage(ChatColor.RED+"§l+++++ EusAccountPro +++++");
                                     p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
@@ -443,7 +440,6 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                     p.sendMessage(ChatColor.BLUE+"/eapre <玩家名> 强制删除二步验证 (需要管理员权限)");
                                     p.sendMessage(ChatColor.RED+"§l----- EusAccountPro -----");
                                     return true;
->>>>>>> parent of e751e49... eap exit and inv json done
                                 }
                             }
                         }
