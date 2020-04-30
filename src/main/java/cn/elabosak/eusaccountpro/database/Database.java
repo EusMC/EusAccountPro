@@ -28,8 +28,8 @@ public abstract class Database {
 
     public abstract boolean deleteInv(UUID uuid) throws IOException; //删除物品栏
 
-    public abstract boolean updateGeoIP(UUID uuid, com.maxmind.geoip2.record.Location location) throws IOException; //更新GeoIP数据库
+    public abstract boolean updateIP(UUID uuid, String string) throws IOException; //更新GeoIP数据库
 
-    public abstract String getGeoIP(UUID uuid); //获取GeoIP
+    public abstract String getIPdata(UUID uuid); //获取GeoIP
 
 }

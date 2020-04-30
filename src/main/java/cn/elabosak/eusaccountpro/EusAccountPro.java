@@ -5,9 +5,6 @@ import cn.elabosak.eusaccountpro.database.*;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
 import com.google.zxing.WriterException;
-import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.model.CityResponse;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,7 +33,7 @@ import java.util.UUID;
 
 public final class EusAccountPro extends JavaPlugin implements Listener{
 
-    public HashMap<Player, ItemStack[]> oldInvs = new HashMap<Player, ItemStack[]>();
+    public HashMap<Player, ItemStack[]> oldInvs = new HashMap<>();
     public HashMap<Player, Boolean> loggedIn = new HashMap<>();
     public HashMap<Player, Boolean> verify = new HashMap<>();
     public HashMap<Player, Location> odloc = new HashMap<>();
@@ -92,51 +89,36 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
         isCreating.put(event.getPlayer(),false);
         verifyHigh.put(event.getPlayer(),false);
+        loggedIn.put(event.getPlayer(),false);
         getServer().getConsoleSender().sendMessage("调试信息：isCreating已设置默认值给"+event.getPlayer().getName());
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
             event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
-            if(getConfig().getBoolean("Plugins.GeoIP.switch")){
-                // TODO GeoIP 支持
-                if (!getConfig().getBoolean("Plugins.GeoIP.online")){
-                    // TODO 使用离线库
-                    //GeoIP2-City 数据库文件D
-                    String path = getConfig().getString("Plugins.GeoIP.lib");
-                    File database = new File(path);
-                    // 创建 DatabaseReader对象
-                    DatabaseReader reader = new DatabaseReader.Builder(database).build();
-                    InetAddress ipAddress = InetAddress.getByName(event.getPlayer().getAddress().toString());
-                    // 获取查询结果
-                    CityResponse response = reader.city(ipAddress);
-                    // 获取城市
-                    com.maxmind.geoip2.record.Location location = response.getLocation();
-                    if(getDatabase().getGeoIP(event.getPlayer().getUniqueId()) == location.toString()){
-                        event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> IP地址正常，验证成功");
-                        loggedIn.put(event.getPlayer(), true);
-                    }else{
-                        if(getDatabase().getInv(event.getPlayer().getUniqueId()) == null){
-                            // 判断物品栏记录是否存在
-                            Location odLoc = event.getPlayer().getLocation();
-                            odloc.put(event.getPlayer(),odLoc);
-                            Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
-                            odgmode.put(event.getPlayer(),event.getPlayer().getGameMode());
-                            event.getPlayer().setGameMode(GameMode.ADVENTURE);
-                            event.getPlayer().teleport(safePoint);
-                            oldInvs.put(event.getPlayer(),event.getPlayer().getInventory().getContents());
-                            event.getPlayer().getInventory().clear();
-                            event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
-                        }else{
-                            isCreating.put(event.getPlayer(),false);
-                            verifyHigh.put(event.getPlayer(),false);
-                            verify.put(event.getPlayer(),true);
-                            event.getPlayer().getInventory().clear();
-                            event.getPlayer().getInventory().setContents(getDatabase().getInv(event.getPlayer().getUniqueId()).getContents());
-                            event.getPlayer().sendMessage(ChatColor.GREEN+"物品栏已归还，请重新运行 /eap create 进行创建");
-                            getDatabase().deleteInv(event.getPlayer().getUniqueId());
-                        }
-                    }
+            if(getConfig().getBoolean("Plugins.IPScan.switch")){
+                // TODO IPScan 支持
+                if(Objects.equals(getDatabase().getIPdata(event.getPlayer().getUniqueId()), event.getPlayer().getAddress().toString())){
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> IP地址正常，验证成功");
+                    loggedIn.put(event.getPlayer(), true);
                 }else{
-                    // TODO 使用 API
-//                    if(urlClimb.urlClimb("http://api.ipinfodb.com/v3/ip-city/?key="+getConfig().getString("Plugins.GeoIP.token")+"&ip="+event.getPlayer().getAddress().toString()))
+                    if(getDatabase().getInv(event.getPlayer().getUniqueId()) == null){
+                        // 判断物品栏记录是否存在
+                        Location odLoc = event.getPlayer().getLocation();
+                        odloc.put(event.getPlayer(),odLoc);
+                        Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
+                        odgmode.put(event.getPlayer(),event.getPlayer().getGameMode());
+                        event.getPlayer().setGameMode(GameMode.ADVENTURE);
+                        event.getPlayer().teleport(safePoint);
+                        oldInvs.put(event.getPlayer(),event.getPlayer().getInventory().getContents());
+                        event.getPlayer().getInventory().clear();
+                        event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
+                    }else{
+                        isCreating.put(event.getPlayer(),false);
+                        verifyHigh.put(event.getPlayer(),false);
+                        verify.put(event.getPlayer(),true);
+                        event.getPlayer().getInventory().clear();
+                        event.getPlayer().getInventory().setContents(getDatabase().getInv(event.getPlayer().getUniqueId()).getContents());
+                        event.getPlayer().sendMessage(ChatColor.GREEN+"物品栏已归还，请重新运行 /eap create 进行创建");
+                        getDatabase().deleteInv(event.getPlayer().getUniqueId());
+                    }
                 }
             }else{
                 if(getDatabase().getInv(event.getPlayer().getUniqueId()) == null){
@@ -183,64 +165,69 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                 try {
                                     if(getDatabase().getSafePoint(uuid) != null){
                                         getServer().getConsoleSender().sendMessage("调试信息：create命令已经接收");
-                                        if(isCreating.get(p)){
-                                            getServer().getConsoleSender().sendMessage("调试信息：已判断“正在创建”状态");
-                                            p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
-                                            return true;
-                                        }else{
-                                            isCreating.put(p,true);
-                                            getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
-                                            p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
-                                            oldInvs.put(p, p.getInventory().getContents()); //保存至HashMap
-                                            getDatabase().updateInv(uuid,p.getInventory()); // 保存至数据库
-                                            getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
-                                            p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
-                                            p.getInventory().clear();
-                                            String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                                            try {
-                                                authController.register(p,secretKey); //注册
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                                p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
+                                        if(!getDatabase().isPlayerRegistered(uuid)){
+                                            if(isCreating.get(p)){
+                                                getServer().getConsoleSender().sendMessage("调试信息：已判断“正在创建”状态");
+                                                p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
                                                 return true;
-                                            }
-                                            try {
-//                                                p.sendMessage(ChatColor.GOLD+"§l密钥已生成 "+authController.getSecretKey(p));
-                                                String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(authController.getSecretKey(p), p.getName() , getConfig().getString("Account.Display"));
-                                                Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
-                                            } catch (WriterException | IOException e) {
-                                                e.printStackTrace();
-                                                p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
-                                                return true;
-                                            }
-                                            ItemStack map = new ItemStack(Material.FILLED_MAP);
-                                            MapView view = getServer().createMap(getServer().getWorlds().get(0));
-                                            for(MapRenderer renderer : view.getRenderers())
-                                                view.removeRenderer(renderer);
-                                            view.addRenderer(new MapRenderer() {
-                                                @Override
-                                                public void render(MapView map, MapCanvas canvas, Player player) {
-                                                    BufferedImage img;
-                                                    try{
-                                                        img = ImageIO.read(new File("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png"));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                        return;
-                                                    }
-                                                    map.setScale(MapView.Scale.NORMAL);
-//                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
-                                                    canvas.drawImage(0,0,img);
+                                            }else{
+                                                isCreating.put(p,true);
+                                                getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
+                                                p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
+                                                oldInvs.put(p, p.getInventory().getContents()); //保存至HashMap
+                                                getDatabase().updateInv(uuid,p.getInventory()); // 保存至数据库
+                                                getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
+                                                p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
+                                                p.getInventory().clear();
+                                                String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
+                                                try {
+                                                    authController.register(p,secretKey); //注册
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                    p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
+                                                    return true;
                                                 }
-                                            });
-                                            MapMeta mapMeta = ((MapMeta)map.getItemMeta());
-                                            mapMeta.setMapView(view);
-                                            map.setItemMeta(mapMeta);
-                                            p.getInventory().setItem(4,map);
-                                            p.getInventory().setHeldItemSlot(4);
-                                            verify.put(p,false);
-                                            p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                            p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
-                                            p.sendMessage(ChatColor.AQUA+"若中途遇到问题，可以运行 /eap exit 退出创建程序");
+                                                try {
+//                                                p.sendMessage(ChatColor.GOLD+"§l密钥已生成 "+authController.getSecretKey(p));
+                                                    String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(authController.getSecretKey(p), p.getName() , getConfig().getString("Account.Display"));
+                                                    Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
+                                                } catch (WriterException | IOException e) {
+                                                    e.printStackTrace();
+                                                    p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
+                                                    return true;
+                                                }
+                                                ItemStack map = new ItemStack(Material.FILLED_MAP);
+                                                MapView view = getServer().createMap(getServer().getWorlds().get(0));
+                                                for(MapRenderer renderer : view.getRenderers())
+                                                    view.removeRenderer(renderer);
+                                                view.addRenderer(new MapRenderer() {
+                                                    @Override
+                                                    public void render(MapView map, MapCanvas canvas, Player player) {
+                                                        BufferedImage img;
+                                                        try{
+                                                            img = ImageIO.read(new File("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png"));
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                            return;
+                                                        }
+                                                        map.setScale(MapView.Scale.NORMAL);
+//                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                                                        canvas.drawImage(0,0,img);
+                                                    }
+                                                });
+                                                MapMeta mapMeta = ((MapMeta)map.getItemMeta());
+                                                mapMeta.setMapView(view);
+                                                map.setItemMeta(mapMeta);
+                                                p.getInventory().setItem(4,map);
+                                                p.getInventory().setHeldItemSlot(4);
+                                                verify.put(p,false);
+                                                p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                                                p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
+                                                p.sendMessage(ChatColor.AQUA+"若中途遇到问题，可以运行 /eap exit 退出创建程序");
+                                                return true;
+                                            }
+                                        }else{
+                                            p.sendMessage(ChatColor.RED+"§l你已注册，请先注销再进行创建");
                                             return true;
                                         }
                                     }else{
@@ -417,19 +404,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.getInventory().setContents(oldInvs.get(p));
                                             p.setGameMode(odgmode.get(p));
                                             p.teleport(odloc.get(p));
-                                            if (getConfig().getBoolean("Plugins.GeoIP.switch")){
-                                                //GeoIP2-City 数据库文件D
-                                                String path = getConfig().getString("Plugins.GeoIP.lib");
-                                                File database = new File(path);
-                                                // 创建 DatabaseReader对象
-                                                DatabaseReader reader = new DatabaseReader.Builder(database).build();
-                                                InetAddress ipAddress = InetAddress.getByName(p.getAddress().toString());
-                                                // 获取查询结果
-                                                CityResponse response = reader.city(ipAddress);
-                                                // 获取城市
-                                                com.maxmind.geoip2.record.Location location = response.getLocation();
-                                                getDatabase().updateGeoIP(p.getUniqueId(),location);
-                                                p.sendMessage(ChatColor.GREEN+"GeoIP地址已更新");
+                                            if (getConfig().getBoolean("Plugins.IPScan.switch")){
+                                                getDatabase().updateIP(p.getUniqueId(),p.getAddress().toString());
+                                                p.sendMessage(ChatColor.GREEN+"IP地址已更新");
                                             }
                                             return true;
                                         } else {
@@ -437,7 +414,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.sendMessage(ChatColor.YELLOW + "认证失败");
                                             return true;
                                         }
-                                    } catch (NotRegistered | IOException | GeoIp2Exception e) {
+                                    } catch (NotRegistered | IOException e) {
                                         p.sendMessage(ChatColor.RED + "尚未注册或程序异常");
                                         return true;
                                     }

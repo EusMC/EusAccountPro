@@ -54,12 +54,12 @@ public class MySQL extends Database {
     }
 
     @Override
-    public boolean updateGeoIP(UUID uuid, com.maxmind.geoip2.record.Location location) {
+    public boolean updateIP(UUID uuid, String string) {
         return false;
     }
 
     @Override
-    public String getGeoIP(UUID uuid) {
+    public String getIPdata(UUID uuid) {
         return null;
     }
 

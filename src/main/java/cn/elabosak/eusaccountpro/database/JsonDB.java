@@ -26,14 +26,14 @@ public class JsonDB extends Database {
     public String getSecretKey(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         String Filepath = "plugins/EusAccountPro/JsonDB/SecretKeys/"+uuid_string+".json";
+//        String Filepath = plugin.getDataFolder()+"/JsonDB/SecretKeys/"+uuid_string+".json";
         File file = new File(Filepath);
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
             String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
-            String secretKey_json = jsonObject.getString("secretKey");
-            return secretKey_json;
+            return jsonObject.getString("secretKey");
         }
     }
 
@@ -87,16 +87,19 @@ public class JsonDB extends Database {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         Map<String,String> loc = new HashMap<String,String>();
         loc.put("safepoint",str2loc.loc2str(safepoint));
+        plugin.getServer().getConsoleSender().sendMessage("调试信息：位置已转换");
         Object locJson = JSONObject.toJSON(loc);
         File mkdirs = new File("plugins/EusAccountPro/JsonDB/SafePoints/");
         if(!mkdirs.exists()){
             mkdirs.mkdirs();
+            plugin.getServer().getConsoleSender().sendMessage("调试信息：文件夹已经创建");
         }
         String format = ".json";
         String file_name = uuid_string + format;
         File file = new File("plugins/EusAccountPro/JsonDB/SafePoints//"+file_name);
         if(!file.exists()){
             file.createNewFile();
+            plugin.getServer().getConsoleSender().sendMessage("调试信息：文件已经创建");
         }
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -137,8 +140,7 @@ public class JsonDB extends Database {
         String mkdirs = "plugins/EusAccountPro/JsonDB/Invs/";
         File mkdir = new File(mkdirs);
         if (!mkdir.exists()){
-            mkdir.mkdirs();
-            return true;
+            return mkdir.mkdirs();
         }
         String format = ".json";
         String file_name = uuid_string + format;
@@ -197,31 +199,29 @@ public class JsonDB extends Database {
         if(!file.exists()){
             return false; //文件不存在，返回null
         }else{
-            file.delete();
-            return true;
+            return file.delete();
         }
     }
 
     @Override
-    public boolean updateGeoIP(UUID uuid, com.maxmind.geoip2.record.Location location) throws IOException {
+    public boolean updateIP(UUID uuid, String string) throws IOException {
         String uuid_string = uuid.toString();
-        String mkdirs = "plugins/EusAccountPro/JsonDB/GeoIP/";
+        String mkdirs = "plugins/EusAccountPro/JsonDB/IPScan/";
         File mkdir = new File(mkdirs);
         if (!mkdir.exists()){
-            mkdir.mkdirs();
-            return true;
+            return mkdir.mkdirs();
         }
         String format = ".json";
         String file_name = uuid_string + format;
-        File file = new File("plugins/EusAccountPro/JsonDB/GeoIP//"+ file_name);
-        Map<String, com.maxmind.geoip2.record.Location> GeoIP = new HashMap<String, com.maxmind.geoip2.record.Location>();
-        GeoIP.put("GeoIP",location);
+        File file = new File("plugins/EusAccountPro/JsonDB/IPScan//"+ file_name);
+        Map<String,String> data = new HashMap<>();
+        data.put("IP",string);
         if(!file.exists()){
             file.createNewFile();
         }
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
-            JSONObject.writeJSONString(fileOutputStream,GeoIP);
+            JSONObject.writeJSONString(fileOutputStream,data);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -230,21 +230,16 @@ public class JsonDB extends Database {
     }
 
     @Override
-    public String getGeoIP(UUID uuid) {
+    public String getIPdata(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
-        String Filepath = "plugins/EusAccountPro/JsonDB/GeoIP/"+uuid_string+".json";
+        String Filepath = "plugins/EusAccountPro/JsonDB/IPScan/"+uuid_string+".json";
         File file = new File(Filepath);
         if(!file.exists()){
             return null; //文件不存在，返回null
         }else{
             String js = FileUtil.ReadFile(Filepath);
             JSONObject jsonObject = JSON.parseObject(js);
-            String geoIP_json = jsonObject.getString("GeoIP");
-            if (geoIP_json != null){
-                return geoIP_json;
-            }else{
-                return null;
-            }
+            return jsonObject.getString("IP");
         }
     }
 
