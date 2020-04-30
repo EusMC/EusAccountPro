@@ -1,7 +1,10 @@
 package cn.elabosak.eusaccountpro;
 
 import cn.elabosak.eusaccountpro.controller.AuthController;
-import cn.elabosak.eusaccountpro.database.*;
+import cn.elabosak.eusaccountpro.database.Database;
+import cn.elabosak.eusaccountpro.database.JsonDB;
+import cn.elabosak.eusaccountpro.database.MySQL;
+import cn.elabosak.eusaccountpro.database.SQLite;
 import cn.elabosak.eusaccountpro.exception.NotRegistered;
 import cn.elabosak.eusaccountpro.utils.Authenticator;
 import com.google.zxing.WriterException;
@@ -36,6 +39,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     public HashMap<Player, GameMode> odgmode = new HashMap<>();
     public HashMap<Player, Boolean> isCreating = new HashMap<>();
     public HashMap<Player, Boolean> verifyHigh = new HashMap<>();
+    public HashMap<Player, Boolean> opening2fa = new HashMap<>();
 
     AuthController authController;
     Database database;
@@ -53,8 +57,6 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
         new EAPConfig(this);
 
         switch (EAPConfig.dbType) {
-            case JSON:
-                database = new JsonDB();
             case SQLite:
                 // TODO SQLite support
                 database = new SQLite();
@@ -63,15 +65,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                 // TODO MySQL support
                 database = new MySQL();
                 break;
-            case yml:
-                // TODO yml support
-                database = new ymlDB();
-                break;
+            case JSON:
+                database = new JsonDB();
             default:
                 database = new JsonDB();
         }
         authController = new AuthController(this);
         getServer().getPluginManager().registerEvents(this,this);
+
     }
 
     @Override
@@ -83,16 +84,36 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
-        isCreating.put(event.getPlayer(),false);
         verifyHigh.put(event.getPlayer(),false);
-        getServer().getConsoleSender().sendMessage("调试信息：isCreating已设置默认值给"+event.getPlayer().getName());
-        if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
-            event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
-            if(getConfig().getBoolean("Plugins.GeoIP")){
-                // TODO GeoIP 支持
+        if(isCreating.get(event.getPlayer())){
+            event.getPlayer().sendMessage(ChatColor.GREEN+"§l未完成EAP的创建步骤，退还物品栏");
+            isCreating.put(event.getPlayer(),false);
+            event.getPlayer().getInventory().clear();
+            event.getPlayer().getInventory().setContents(oldInvs.get(event.getPlayer()));
+            getDatabase().deletePlayer(event.getPlayer().getUniqueId());
+        }else{
+            if(opening2fa.get(event.getPlayer())){
+                isCreating.put(event.getPlayer(),false);
+                if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
+                    Location odLoc = event.getPlayer().getLocation();
+                    odloc.put(event.getPlayer(),odLoc);
+                    Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
+                    odgmode.put(event.getPlayer(),event.getPlayer().getGameMode());
+                    event.getPlayer().setGameMode(GameMode.ADVENTURE);
+                    event.getPlayer().teleport(safePoint);
+                    loggedIn.put(event.getPlayer(),false);
+                    opening2fa.put(event.getPlayer(),true);
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
+                }else{
+                    event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> 使用 /eap create 创建二步验证 -");
+                    verifyHigh.put(event.getPlayer(),false);
+                }
             }else{
-                if(getDatabase().getInv(event.getPlayer().getUniqueId()) == null){
-                    // 判断物品栏记录是否存在
+                isCreating.put(event.getPlayer(),false);
+                if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
                     Location odLoc = event.getPlayer().getLocation();
                     odloc.put(event.getPlayer(),odLoc);
                     Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
@@ -101,22 +122,15 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                     event.getPlayer().teleport(safePoint);
                     oldInvs.put(event.getPlayer(),event.getPlayer().getInventory().getContents());
                     event.getPlayer().getInventory().clear();
+                    loggedIn.put(event.getPlayer(),false);
+                    opening2fa.put(event.getPlayer(),true);
                     event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
                 }else{
-                    isCreating.put(event.getPlayer(),false);
+                    event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
+                    event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> 使用 /eap create 创建二步验证 -");
                     verifyHigh.put(event.getPlayer(),false);
-                    verify.put(event.getPlayer(),true);
-                    event.getPlayer().getInventory().clear();
-                    event.getPlayer().getInventory().setContents(getDatabase().getInv(event.getPlayer().getUniqueId()).getContents());
-                    event.getPlayer().sendMessage(ChatColor.GREEN+"物品栏已归还，请重新运行 /eap create 进行创建");
-                    getDatabase().deleteInv(event.getPlayer().getUniqueId());
                 }
-
             }
-        }else{
-            event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
-            event.getPlayer().sendMessage(ChatColor.GREEN+"§lEAP -> 使用 /eap create 创建二步验证 -");
-            verifyHigh.put(event.getPlayer(),false);
         }
     }
 
@@ -134,64 +148,67 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                 try {
                                     if(getDatabase().getSafePoint(uuid) != null){
                                         getServer().getConsoleSender().sendMessage("调试信息：create命令已经接收");
-                                        if(isCreating.get(p)){
-                                            getServer().getConsoleSender().sendMessage("调试信息：已判断“正在创建”状态");
-                                            p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
-                                            return true;
-                                        }else{
-                                            isCreating.put(p,true);
-                                            getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
-                                            p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
-                                            oldInvs.put(p, p.getInventory().getContents()); //保存至HashMap
-                                            getDatabase().updateInv(uuid,p.getInventory()); // 保存至数据库
-                                            getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
-                                            p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
-                                            p.getInventory().clear();
-                                            String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
-                                            try {
-                                                authController.register(p,secretKey); //注册
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                                p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
-                                                return true;
-                                            }
-                                            try {
-//                                                p.sendMessage(ChatColor.GOLD+"§l密钥已生成 "+authController.getSecretKey(p));
-                                                String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(authController.getSecretKey(p), p.getName() , getConfig().getString("Account.Display"));
-                                                Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
-                                            } catch (WriterException | IOException e) {
-                                                e.printStackTrace();
-                                                p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
-                                                return true;
-                                            }
-                                            ItemStack map = new ItemStack(Material.FILLED_MAP);
-                                            MapView view = getServer().createMap(getServer().getWorlds().get(0));
-                                            for(MapRenderer renderer : view.getRenderers())
-                                                view.removeRenderer(renderer);
-                                            view.addRenderer(new MapRenderer() {
-                                                @Override
-                                                public void render(MapView map, MapCanvas canvas, Player player) {
-                                                    BufferedImage img;
-                                                    try{
-                                                        img = ImageIO.read(new File("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png"));
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                        return;
-                                                    }
-                                                    map.setScale(MapView.Scale.NORMAL);
-//                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
-                                                    canvas.drawImage(0,0,img);
+                                        if(!getDatabase().isPlayerRegistered(p.getUniqueId())){
+//                                            if(isCreating.get(p)){
+//                                                getServer().getConsoleSender().sendMessage("调试信息：已判断“正在创建”状态");
+//                                                p.sendMessage(ChatColor.RED+"§l你正在创建EAP");
+//                                                return true;
+//                                            }else{
+                                                isCreating.put(p,true);
+                                                getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
+                                                p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
+                                                oldInvs.put(p, p.getInventory().getContents());
+                                                getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
+                                                p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
+                                                p.getInventory().clear();
+                                                String secretKey = Authenticator.generateSecretKey(); //生成SecretKey
+                                                try {
+                                                    authController.register(p,secretKey); //注册
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                    p.sendMessage(ChatColor.RED+"程序异常，进行authController.register()异常");
+                                                    return true;
                                                 }
-                                            });
-                                            MapMeta mapMeta = ((MapMeta)map.getItemMeta());
-                                            mapMeta.setMapView(view);
-                                            map.setItemMeta(mapMeta);
-                                            p.getInventory().setItem(4,map);
-                                            p.getInventory().setHeldItemSlot(4);
-                                            verify.put(p,false);
-                                            p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
-                                            p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
-                                            p.sendMessage(ChatColor.AQUA+"若中途遇到问题，可以运行 /eap exit 退出创建程序");
+                                                try {
+//                                                p.sendMessage(ChatColor.GOLD+"§l密钥已生成 "+authController.getSecretKey(p));
+                                                    String QRCode_url = Authenticator.getGoogleAuthenticatorQRCode(authController.getSecretKey(p), p.getName() , getConfig().getString("Account.Display"));
+                                                    Authenticator.createQRCode(QRCode_url, "plugins/EusAccountPro/QRCode/",uuid.toString()+".png", 128 ,128);
+                                                } catch (WriterException | IOException e) {
+                                                    e.printStackTrace();
+                                                    p.sendMessage(ChatColor.RED+"程序异常，进行createQRCode()异常");
+                                                    return true;
+                                                }
+                                                ItemStack map = new ItemStack(Material.FILLED_MAP);
+                                                MapView view = getServer().createMap(getServer().getWorlds().get(0));
+                                                for(MapRenderer renderer : view.getRenderers())
+                                                    view.removeRenderer(renderer);
+                                                view.addRenderer(new MapRenderer() {
+                                                    @Override
+                                                    public void render(MapView map, MapCanvas canvas, Player player) {
+                                                        BufferedImage img;
+                                                        try{
+                                                            img = ImageIO.read(new File("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png"));
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                            return;
+                                                        }
+                                                        map.setScale(MapView.Scale.NORMAL);
+//                                                    canvas.drawImage(0,0,new ImageIcon("plugins/EusAccountPro/QRCode/"+player.getUniqueId().toString()+".png").getImage());
+                                                        canvas.drawImage(0,0,img);
+                                                    }
+                                                });
+                                                MapMeta mapMeta = ((MapMeta)map.getItemMeta());
+                                                mapMeta.setMapView(view);
+                                                map.setItemMeta(mapMeta);
+                                                p.getInventory().setItem(4,map);
+                                                p.getInventory().setHeldItemSlot(4);
+                                                verify.put(p,false);
+                                                p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
+                                                p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
+                                                return true;
+//                                            }
+                                        }else{
+                                            p.sendMessage(ChatColor.RED+"§l请先注销EAP再进行创建");
                                             return true;
                                         }
                                     }else{
@@ -214,11 +231,11 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                 p.sendMessage(ChatColor.RED+"你正在创建EAP");
                                 return true;
                             }else{
-                                if(!loggedIn.get(p)){
-                                    p.sendMessage(ChatColor.RED+"§l请先认证");
-                                    return true;
-                                }else{
-                                    if(getDatabase().isPlayerRegistered(p.getUniqueId())){
+                                if(!getDatabase().isPlayerRegistered(p.getUniqueId())){
+                                    if(!loggedIn.get(p)){
+                                        p.sendMessage(ChatColor.RED+"§l请先认证");
+                                        return true;
+                                    }else{
                                         if (getDatabase().deletePlayer(p.getUniqueId())){
                                             p.sendMessage(ChatColor.GREEN + "§l删除成功");
                                             return true;
@@ -226,10 +243,10 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             p.sendMessage(ChatColor.RED + "§l删除失败");
                                             return true;
                                         }
-                                    }else{
-                                        p.sendMessage(ChatColor.RED+"§l尚未注册");
-                                        return true;
                                     }
+                                }else{
+                                    p.sendMessage(ChatColor.RED+"§l尚未注册");
+                                    return true;
                                 }
                             }
                         } else {
@@ -263,7 +280,6 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                     isCreating.put(p,false);
                                                     verifyHigh.put(p,true);
                                                     loggedIn.put(p,true);
-                                                    getDatabase().deleteInv(p.getUniqueId());
                                                     return true;
                                                 }else{
                                                     p.sendMessage(ChatColor.GOLD+"§l当前密钥为 "+authController.getSecretKey(p));
@@ -279,23 +295,19 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         return true;
                                     }
                                 } else {
-                                    if(args[0].equalsIgnoreCase("exit")){
-                                        if(isCreating.get(p)){
-                                            //TODO 退出创建步骤
+                                    if (args[0].equalsIgnoreCase("exit")){
+                                        //TODO 退出
+                                        if (isCreating.get(p)){
                                             p.getInventory().clear();
                                             p.getInventory().setContents(oldInvs.get(p));
+                                            p.sendMessage(ChatColor.GREEN+"§l物品栏已归还");
+                                            getDatabase().deletePlayer(p.getUniqueId());
                                             isCreating.put(p,false);
-                                            verify.put(p,true);
                                             verifyHigh.put(p,false);
-                                            oldInvs.clear();
-                                            try {
-                                                getDatabase().deleteInv(p.getUniqueId());
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
+                                            verify.put(p,true);
                                             return true;
                                         }else{
-                                            p.sendMessage(ChatColor.GOLD+"§l你不需要做此操作");
+                                            p.sendMessage(ChatColor.GOLD+"§l你不需要进行此操作");
                                             return true;
                                         }
                                     }else{
@@ -304,6 +316,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
                                         p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
                                         p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
+                                        p.sendMessage(ChatColor.GREEN+"/eap exit 退出创建步骤");
                                         p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
                                         p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
                                         p.sendMessage(ChatColor.BLUE+"/eapre <玩家名> 强制删除二步验证 (需要管理员权限)");
@@ -320,6 +333,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                     p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");
                     p.sendMessage(ChatColor.GREEN+"/eap create 注册EAP");
                     p.sendMessage(ChatColor.GREEN+"/eap delete 注销EAP");
+                    p.sendMessage(ChatColor.GREEN+"/eap exit 退出创建步骤");
                     p.sendMessage(ChatColor.GREEN+"/eap verify <code> 初始化二步验证");
                     p.sendMessage(ChatColor.GREEN+"/2fa <code> 进服二步验证");
                     p.sendMessage(ChatColor.BLUE+"/eapre <玩家名> 强制删除二步验证 (需要管理员权限)");
@@ -357,6 +371,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                     if (authController.verify(p, args[0])) {
                                         // Success
                                         loggedIn.put(p, true);
+                                        opening2fa.put(p,false);
                                         p.sendMessage(ChatColor.GREEN + "认证成功");
                                         p.getInventory().setContents(oldInvs.get(p));
                                         p.setGameMode(odgmode.get(p));

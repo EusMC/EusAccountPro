@@ -1,8 +1,6 @@
 package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -37,21 +35,6 @@ public class MySQL extends Database {
     @Override
     public Location getSafePoint(UUID uuid) {
         return null;
-    }
-
-    @Override
-    public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
-        return false;
-    }
-
-    @Override
-    public Inventory getInv(UUID uuid) throws IOException {
-        return null;
-    }
-
-    @Override
-    public boolean deleteInv(UUID uuid) throws IOException {
-        return false;
     }
 
 
