@@ -1,7 +1,11 @@
 package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
+<<<<<<< HEAD
 import org.bukkit.inventory.Inventory;
+=======
+import org.bukkit.inventory.ItemStack;
+>>>>>>> parent of 1ed2b6b... ok
 
 import java.io.IOException;
 import java.util.UUID;
@@ -38,14 +42,15 @@ public class ymlDB extends Database{
     }
 
     @Override
-    public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
+    public boolean updateInv(UUID uuid, ItemStack[] itemStacks) throws IOException {
         return false;
     }
 
     @Override
-    public Inventory getInv(UUID uuid) throws IOException {
+    public ItemStack[] getInv(UUID uuid) throws IOException {
         return null;
     }
+<<<<<<< HEAD
 
     @Override
     public boolean deleteInv(UUID uuid) throws IOException {
@@ -61,4 +66,6 @@ public class ymlDB extends Database{
     public String getIPdata(UUID uuid) {
         return null;
     }
+=======
+>>>>>>> parent of 1ed2b6b... ok
 }

@@ -3,11 +3,15 @@ package cn.elabosak.eusaccountpro.database;
 import org.bukkit.Location;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.bukkit.inventory.Inventory;
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
+=======
+import org.bukkit.inventory.ItemStack;
+>>>>>>> parent of 1ed2b6b... ok
 
 import java.io.IOException;
 import java.util.UUID;
@@ -47,12 +51,12 @@ public class SQLite extends Database {
 <<<<<<< HEAD
 <<<<<<< HEAD
     @Override
-    public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
+    public boolean updateInv(UUID uuid, ItemStack[] itemStacks) throws IOException {
         return false;
     }
 
     @Override
-    public Inventory getInv(UUID uuid) throws IOException {
+    public ItemStack[] getInv(UUID uuid) throws IOException {
         return null;
     }
 
