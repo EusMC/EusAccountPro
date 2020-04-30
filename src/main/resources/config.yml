@@ -1,7 +1,12 @@
 Storage:
-  type: JSON # JSON, SQLite, MySQL, yml
+  # Supported type(CaSe SeNsItIvE): JSON, SQLite, MySQL
+  type: JSON
 Account:
+<<<<<<< HEAD
   Display: EusMC # 字符串，包含在二维码内服务器的名称，可自定义，APP扫描后会显示该名称
 Plugins:
   IPScan:
     switch: false # 布尔值，开启GeoIP地址检测，根据地址变动自动启用进服验证
+=======
+  Display: EusMC
+>>>>>>> parent of e751e49... eap exit and inv json done
