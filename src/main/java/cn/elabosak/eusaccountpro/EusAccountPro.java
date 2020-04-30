@@ -94,6 +94,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
         if(getDatabase().isPlayerRegistered(event.getPlayer().getUniqueId())){
             event.getPlayer().sendMessage(ChatColor.GREEN+"§l+ EusAccountPro 正在保护你的账户 +");
 <<<<<<< HEAD
+<<<<<<< HEAD
             if(getConfig().getBoolean("Plugins.IPScan.switch")){
                 // TODO IPScan 支持
                 if(Objects.equals(getDatabase().getIPdata(event.getPlayer().getUniqueId()), event.getPlayer().getAddress().toString())){
@@ -145,6 +146,8 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
 
             }
 =======
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
             Location odLoc = event.getPlayer().getLocation();
             odloc.put(event.getPlayer(),odLoc);
             Location safePoint = getDatabase().getSafePoint(event.getPlayer().getUniqueId());
@@ -154,6 +157,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
             oldInvs.put(event.getPlayer(),event.getPlayer().getInventory().getContents());
             event.getPlayer().getInventory().clear();
             event.getPlayer().sendMessage(ChatColor.GREEN+"使用 /2fa <code> 进行验证");
+<<<<<<< HEAD
+>>>>>>> parent of e751e49... eap exit and inv json done
+=======
 >>>>>>> parent of e751e49... eap exit and inv json done
         }else{
             event.getPlayer().sendMessage(ChatColor.BLUE+"§lEAP -> EusAccountPro 已推出 -");
@@ -290,6 +296,9 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             verify.put(p,false);
                                             p.sendMessage(ChatColor.GREEN+"请扫描二维码，并使用 /eap verify <code> 进行初始验证");
                                             p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
+<<<<<<< HEAD
+>>>>>>> parent of e751e49... eap exit and inv json done
+=======
 >>>>>>> parent of e751e49... eap exit and inv json done
                                             return true;
                                         }
@@ -367,6 +376,7 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                         e.printStackTrace();
                                     }
                                 } else {
+<<<<<<< HEAD
                                     if (args[0].equalsIgnoreCase("verify")){
                                         if(!verify.get(p)){
                                             if(args.length != 2){
@@ -430,6 +440,8 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                             return true;
                                         }
                                     }
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
                                     //指令错误，显示使用帮助
                                     p.sendMessage(ChatColor.RED+"§l+++++ EusAccountPro +++++");
                                     p.sendMessage(ChatColor.GREEN+"/eap safepoint 记录玩家安全点");

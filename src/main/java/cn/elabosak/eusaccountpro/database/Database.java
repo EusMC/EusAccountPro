@@ -21,6 +21,7 @@ public abstract class Database {
     public abstract Location getSafePoint(UUID uuid) throws IOException; //请求输入玩家uuid获取安全点
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public abstract boolean updateInv(UUID uuid, Inventory inventory) throws IOException; //保存玩家物品栏至数据库
 
     public abstract Inventory getInv(UUID uuid) throws IOException; //获取数据库中的物品栏
@@ -31,6 +32,8 @@ public abstract class Database {
 
     public abstract String getIPdata(UUID uuid); //获取GeoIP
 
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
 }

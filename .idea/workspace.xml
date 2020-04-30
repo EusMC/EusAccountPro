@@ -9,6 +9,7 @@
     <list default="true" id="1fc66e9e-9c70-4642-ba31-cc4cca8daa3f" name="默认更改列表" comment="AuthController sketch">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/EusAccountPro.iml" beforeDir="false" afterPath="$PROJECT_DIR$/EusAccountPro.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/elabosak/eusaccountpro/EusAccountPro.java" afterDir="false" />
@@ -35,6 +36,9 @@
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/original-EusAccountPro-20w15a.jar" beforeDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
 >>>>>>> parent of e751e49... eap exit and inv json done
@@ -164,10 +168,13 @@
       <workItem from="1587216994067" duration="50000" />
       <workItem from="1587275100342" duration="667000" />
 <<<<<<< HEAD
+<<<<<<< HEAD
       <workItem from="1587804504188" duration="5315000" />
       <workItem from="1587810705034" duration="668000" />
       <workItem from="1587814487762" duration="4543000" />
       <workItem from="1588245833140" duration="3779000" />
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
     </task>
@@ -208,15 +215,21 @@
     </state>
     <state x="256" y="26" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1586683668805" />
 <<<<<<< HEAD
+<<<<<<< HEAD
     <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1587816742860">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1587816742860" />
 =======
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
     <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser" timestamp="1586576979309">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="643" y="204" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1586576979309" />
+<<<<<<< HEAD
+>>>>>>> parent of e751e49... eap exit and inv json done
+=======
 >>>>>>> parent of e751e49... eap exit and inv json done
     <state x="1379" y="479" key="#com.intellij.ide.util.MemberChooser/0.23.2560.1352@0.23.2560.1352" timestamp="1586417291643" />
     <state x="661" y="262" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1586683576807">

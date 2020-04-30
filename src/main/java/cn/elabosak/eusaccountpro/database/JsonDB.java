@@ -22,8 +22,12 @@ public class JsonDB extends Database {
     public String getSecretKey(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
 <<<<<<< HEAD
+<<<<<<< HEAD
         String Filepath = "plugins/EusAccountPro/JsonDB/SecretKeys/"+uuid_string+".json";
 //        String Filepath = plugin.getDataFolder()+"/JsonDB/SecretKeys/"+uuid_string+".json";
+=======
+        String Filepath = "plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json";
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
         String Filepath = "plugins/EusAccountPro/JsonDB/Players/"+uuid_string+".json";
 >>>>>>> parent of e751e49... eap exit and inv json done
@@ -135,6 +139,7 @@ public class JsonDB extends Database {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @Override
     public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
         String uuid_string = uuid.toString();
@@ -244,6 +249,8 @@ public class JsonDB extends Database {
         }
     }
 
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
 }

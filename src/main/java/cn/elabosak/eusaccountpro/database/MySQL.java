@@ -2,7 +2,10 @@ package cn.elabosak.eusaccountpro.database;
 
 import org.bukkit.Location;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.bukkit.inventory.Inventory;
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
 
@@ -42,6 +45,7 @@ public class MySQL extends Database {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @Override
     public boolean updateInv(UUID uuid, Inventory inventory) throws IOException {
         return false;
@@ -67,6 +71,8 @@ public class MySQL extends Database {
         return null;
     }
 
+=======
+>>>>>>> parent of e751e49... eap exit and inv json done
 =======
 >>>>>>> parent of e751e49... eap exit and inv json done
 
