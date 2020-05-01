@@ -19,6 +19,8 @@ public class FileUtil {
                 laststr.append(tempString); // laststr += tempString;
             }
             reader.close();
+            inputStreamReader.close();
+            fileInputStream.close();
         }catch(IOException e){
             e.printStackTrace();
         }finally{

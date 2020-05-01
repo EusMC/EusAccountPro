@@ -9,6 +9,7 @@ import cn.elabosak.eusaccountpro.utils.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import cn.elabosak.eusaccountpro.EusAccountPro;
@@ -75,18 +76,18 @@ public class JsonDB extends Database {
     }
 
     @Override
-    public boolean deletePlayer(UUID uuid) {
+    public boolean deletePlayer(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/SecretKey/"+uuid_string+".json");
         File QRCode = new File("plugins/EusAccountPro/QRCode/"+uuid_string+".png");
         if(!file.exists() && !QRCode.exists()){
             return false; //文件不存在，返回false
         }else{
-            if(file.delete() && QRCode.delete()){
-             return true;
-            }else{
-                return false;
-            }
+//            FileUtils.forceDeleteOnExit(file);
+//            FileUtils.forceDeleteOnExit(QRCode);
+            file.delete();
+            QRCode.delete();
+            return true;
         }
     }
 

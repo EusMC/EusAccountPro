@@ -14,7 +14,7 @@ public abstract class Database {
 
     public abstract boolean isPlayerRegistered(UUID uuid); //请求输入玩家uuid判断玩家是否已注册
 
-    public abstract boolean deletePlayer(UUID uuid); //请求输入玩家uuid和数据库类型进行删除
+    public abstract boolean deletePlayer(UUID uuid) throws IOException; //请求输入玩家uuid和数据库类型进行删除
 
     public abstract boolean SafePoint(UUID uuid, Location safepoint) throws IOException; //请求输入玩家uuid和位置记录安全点
 
