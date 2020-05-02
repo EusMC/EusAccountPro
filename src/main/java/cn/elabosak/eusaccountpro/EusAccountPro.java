@@ -230,13 +230,6 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                 p.sendMessage(ChatColor.GOLD+"若无法扫描二维码，请输入以下密钥 "+authController.getSecretKey(p));
                                                 return true;
                                             }
-//                                        if(!getDatabase().isPlayerRegistered(uuid)){
-//
-//                                        }
-//                                        else{
-//                                            p.sendMessage(ChatColor.RED+"§l请先注销EAP再进行创建");
-//                                            return true;
-//                                        }
                                         }else{
                                             p.sendMessage(ChatColor.RED+"尚未设置安全点，请在安全的地方运行"+ChatColor.GREEN+"§l /eap safepoint");
                                             return true;
