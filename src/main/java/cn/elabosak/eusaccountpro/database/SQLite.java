@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import java.io.IOException;
 import java.util.UUID;
 
+
 public class SQLite extends Database {
 
     @Override
@@ -34,6 +35,16 @@ public class SQLite extends Database {
 
     @Override
     public Location getSafePoint(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public Boolean updateStauts(UUID uuid, String stauts) throws IOException {
+        return null;
+    }
+
+    @Override
+    public String getStauts(UUID uuid) throws IOException {
         return null;
     }
 

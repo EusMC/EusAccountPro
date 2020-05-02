@@ -1,19 +1,19 @@
 package cn.elabosak.eusaccountpro.database;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import cn.elabosak.eusaccountpro.utils.FileClean;
 import cn.elabosak.eusaccountpro.utils.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import org.apache.commons.io.FileUtils;
+//import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import cn.elabosak.eusaccountpro.EusAccountPro;
 import cn.elabosak.eusaccountpro.utils.str2loc;
+
 
 public class JsonDB extends Database {
 
@@ -68,7 +68,7 @@ public class JsonDB extends Database {
     public boolean isPlayerRegistered(UUID uuid) {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/SecretKey/"+uuid_string+".json");
-        if(!file.exists()){
+        if(!file.exists() && !file.isFile()){
             return false; //文件不存在，返回false
         }else{
             return true;
@@ -79,14 +79,19 @@ public class JsonDB extends Database {
     public boolean deletePlayer(UUID uuid) throws IOException {
         String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
         File file = new File("plugins/EusAccountPro/JsonDB/SecretKey/"+uuid_string+".json");
-        File QRCode = new File("plugins/EusAccountPro/QRCode/"+uuid_string+".png");
-        if(!file.exists() && !QRCode.exists()){
+        if(!file.exists() && !file.isFile()){
             return false; //文件不存在，返回false
         }else{
 //            FileUtils.forceDeleteOnExit(file);
-//            FileUtils.forceDeleteOnExit(QRCode);
-            file.delete();
-            QRCode.delete();
+            new FileClean();
+            Timer timer = new Timer();//实例化Timer类
+            timer.schedule(new TimerTask(){
+                public void run(){
+                    file.delete();
+                    this.cancel();}},1000);
+            if(file.exists() && file.isFile()){
+                file.delete();
+            }
             return true;
         }
     }
@@ -134,6 +139,51 @@ public class JsonDB extends Database {
             if (safepoint_json != null){
                 return str2loc.str2loc(safepoint_json);
 
+            }else{
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public Boolean updateStauts(UUID uuid, String stauts) throws IOException {
+        String uuid_string = uuid.toString();
+        Map<String,String> stautsmap = new HashMap<String,String>();
+        stautsmap.put("stauts",stauts);
+        Object stautsjson = JSONObject.toJSON(stautsmap);
+        File mkdirs = new File("plugins/EusAccountPro/JsonDB/Stauts/");
+        if(!mkdirs.exists()){
+            mkdirs.mkdirs();
+        }
+        String format = ".json";
+        String file_name = uuid_string + format;
+        File file = new File("plugins/EusAccountPro/JsonDB/Stauts//"+file_name);
+        if(!file.exists()){
+            file.createNewFile();
+        }
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            JSONObject.writeJSONString(fileOutputStream,stautsjson);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String getStauts(UUID uuid) throws IOException {
+        String uuid_string = uuid.toString(); //将uuid的数据类型转换为String
+        String Filepath = "plugins/EusAccountPro/JsonDB/Stauts/"+uuid_string+".json";
+        File file = new File(Filepath);
+        if(!file.exists()){
+            return null; //文件不存在，返回null
+        }else{
+            String js = FileUtil.ReadFile(Filepath);
+            JSONObject jsonObject = JSON.parseObject(js);
+            String stauts_json = jsonObject.getString("stauts");
+            if (stauts_json != null){
+                return stauts_json;
             }else{
                 return null;
             }
