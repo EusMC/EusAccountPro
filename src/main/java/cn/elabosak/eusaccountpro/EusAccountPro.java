@@ -8,6 +8,11 @@ import com.google.zxing.WriterException;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -83,14 +89,28 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
+    public void onPlayerJoin(PlayerJoinEvent event) throws IOException, InvalidConfigurationException {
         verify.put(event.getPlayer(),true); // 默认设置verify为true，免得有人找茬来验证
         verifyHigh.put(event.getPlayer(),false);
         if(getDatabase().getStauts(event.getPlayer().getUniqueId()) == "creating"){
             event.getPlayer().getInventory().clear();
-            event.getPlayer().getInventory().setContents(oldInvs.get(event.getPlayer()));
+//            event.getPlayer().getInventory().setContents(oldInvs.get(event.getPlayer()));
             event.getPlayer().sendMessage(ChatColor.GREEN+"§l你未完成EAP的创建步骤，退还物品栏");
             isCreating.put(event.getPlayer(),false);
+
+            // TODO 载入inv的yml
+            File file = new File("/plugins/EusAccountPro/JsonDB/SecretKey/"+event.getPlayer().getUniqueId()+".yml");
+            FileConfiguration inv = YamlConfiguration.loadConfiguration(file);
+            ItemStack[] newItemStack0 = new ItemStack[0];
+            Object data = inv.get("inv");
+            ItemStack[] invStack;
+            if (data instanceof List) {
+                invStack = ((List<ItemStack>) data).toArray(newItemStack0);
+            } else{
+                invStack = (ItemStack[]) data;
+            }
+            event.getPlayer().getInventory().setContents(invStack);
+            
             getDatabase().updateStauts(event.getPlayer().getUniqueId(),"verified");
             loggedIn.put(event.getPlayer(),true);
         }else{
@@ -181,6 +201,14 @@ public final class EusAccountPro extends JavaPlugin implements Listener{
                                                 getServer().getConsoleSender().sendMessage("调试信息：已写入“正在创建“状态为“是”");
                                                 p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "正在创建二步验证QRCode...");
                                                 oldInvs.put(p, p.getInventory().getContents());
+                                                // TODO 存储inv的yml
+                                                File f = new File("/plugins/EusAccountPro/invs/", uuid.toString()+".yml");
+                                                FileConfiguration invConfig = YamlConfiguration.loadConfiguration(f);
+                                                ItemStack[] itemStacks = p.getInventory().getContents();
+                                                invConfig.set("inv", itemStacks);
+                                                invConfig.save(f);
+//                                                FileConfiguration inv = YamlConfiguration.loadConfiguration(f);
+//                                                inv.set("inv",itemStacks);
                                                 getServer().getConsoleSender().sendMessage("调试信息：物品栏已保存");
                                                 p.sendMessage(ChatColor.GREEN + "§l+ EAP -> " + ChatColor.GOLD + "物品栏已保存...");
                                                 p.getInventory().clear();
